@@ -160,6 +160,19 @@ export async function loadGameAssets() {
   return { panda, pandaDead, bambooPlatform, bambooStump };
 }
 
+export type GameAssets = Awaited<ReturnType<typeof loadGameAssets>>;
+
+/** Apply chroma-keyed sprite data URLs to DOM UI images (game-over panda, etc.). */
+export function applyUiSprites(assets: GameAssets): void {
+  const src = assets.pandaDead.src;
+  document.querySelectorAll<HTMLImageElement>(".go-panda-ui").forEach((el) => {
+    const reveal = () => el.classList.add("is-ready");
+    el.onload = reveal;
+    el.src = src;
+    if (el.complete) reveal();
+  });
+}
+
 export function spriteAspect(image: HTMLImageElement, fallback = 1.2): number {
   return image.complete && image.naturalWidth > 0
     ? image.naturalHeight / image.naturalWidth

@@ -17,7 +17,7 @@ import {
   updateGame,
 } from "./game/Game";
 import { getDomRefs, hideLoading, showLoading } from "./ui/dom";
-import { loadGameAssets } from "./utils/assets";
+import { loadGameAssets, applyUiSprites } from "./utils/assets";
 import { flushSave, initSave } from "./save/SaveManager";
 import { BackgroundRenderer } from "./game/Background";
 import { playables } from "./youtube/PlayablesBridge";
@@ -58,6 +58,7 @@ async function boot(): Promise<void> {
 
   const background = new BackgroundRenderer();
   const [images] = await Promise.all([loadGameAssets(), background.load()]);
+  applyUiSprites(images);
   const state = createRuntime(dom, images, save.highScore, background);
 
   playables.init({

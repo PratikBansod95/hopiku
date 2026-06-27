@@ -75,11 +75,10 @@
         <div id="anim-box" class="game-over-card stamp-anim">
           <div class="go-hero">
             <img
-              class="go-panda-peek"
-              src="./assets/images/panda-dead.png"
+              class="go-panda-peek go-panda-ui"
               alt=""
-              width="96"
-              height="96"
+              width="120"
+              height="80"
               decoding="async"
             />
             <div class="go-title-plank">
@@ -96,28 +95,19 @@
                 <span class="go-best-text">BEST — 0</span>
               </p>
               <div class="go-taunt-row">
-                <img
-                  class="go-sad-icon"
-                  src="./assets/images/panda-dead.png"
-                  alt=""
-                  width="36"
-                  height="36"
-                  decoding="async"
-                />
+                <span class="go-sad-badge" aria-hidden="true">🐼</span>
                 <p id="taunt-sub" class="taunt-sub go-taunt-sub">Oops! Even pandas have off days!</p>
               </div>
             </div>
           </div>
 
           <p id="taunt-restart" class="go-play-again" aria-hidden="true">
-            <img
-              class="go-play-again-img"
-              src="./assets/images/cta-play-again.png"
-              alt="Tap to Play Again"
-              width="320"
-              height="64"
-              decoding="async"
-            />
+            <span class="go-play-again-btn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5V2L7 7l5 5V8c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 14c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 10.74A7.93 7.93 0 0 0 4 14c0 4.42 3.58 8 8 8v3l5-5-5-5v3z"/>
+              </svg>
+              Tap to Play Again
+            </span>
           </p>
 
           <div class="game-over-actions go-actions">

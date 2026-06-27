@@ -217,11 +217,19 @@ export function resetScoreDisplay(dom: DomRefs, score: number): void {
   dom.scoreDisplay.style.transform = "scale(1)";
 }
 
+function formatTauntTitle(title: string): string {
+  const space = title.indexOf(" ");
+  if (space === -1) {
+    return `<span class="go-title-a">${title}</span>`;
+  }
+  return `<span class="go-title-a">${title.slice(0, space)}</span><span class="go-title-b">${title.slice(space + 1)}</span>`;
+}
+
 export function showGameOver(dom: DomRefs, score: number, best: number): void {
   dom.gameOverScreen.classList.remove("hidden");
   dom.finalScore.textContent = String(score);
   const taunt = getTaunt(score);
-  dom.tauntTitle.textContent = taunt.title;
+  dom.tauntTitle.innerHTML = formatTauntTitle(taunt.title);
   dom.tauntSub.textContent = taunt.sub;
 
   dom.animBox.style.animation = "none";
