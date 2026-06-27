@@ -7,6 +7,7 @@ import {
 import { normalizeSave, writeSave, getSave, DEFAULT_SAVE } from "@services/SaveService";
 import {
   commitRunResult,
+  commitRunFromState,
   evaluateUnlocks,
   equipSkin,
   formatLifetimeStatsLine,
@@ -128,5 +129,17 @@ describe("Skin progression", () => {
       equippedSkin: "ninja",
     });
     expect(migrated.equippedSkin).toBe("default");
+  });
+
+  it("skips committing empty active runs", () => {
+    const unlocked = commitRunFromState({
+      runCommitted: false,
+      gamePhase: "PLAYING",
+      score: 0,
+      logsClimbed: 0,
+      runSession: { perfects: 0, goods: 0, peakCombo: 0 },
+    });
+    expect(unlocked).toEqual([]);
+    expect(getSave().stats.runsPlayed).toBe(0);
   });
 });

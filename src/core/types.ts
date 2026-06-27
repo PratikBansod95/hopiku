@@ -8,6 +8,8 @@ export type GamePhase =
   | "DYING_TAUNT"
   | "GAMEOVER";
 
+export type PauseSource = "none" | "user" | "youtube";
+
 export interface Layout {
   canvasWidth: number;
   canvasHeight: number;

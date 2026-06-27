@@ -94,6 +94,29 @@ export function hasReachedSummit(logsClimbed: number): boolean {
   return logsClimbed >= SUMMIT_UNLOCK_LOGS;
 }
 
+export function commitRunFromState(state: {
+  runCommitted: boolean;
+  gamePhase: string;
+  score: number;
+  logsClimbed: number;
+  runSession: RunSessionStats;
+}): UnlockDefinition[] {
+  if (state.runCommitted) return [];
+  if (state.gamePhase !== "PLAYING" && state.gamePhase !== "PAUSED") return [];
+  if (state.logsClimbed === 0 && state.score === 0) return [];
+
+  state.runCommitted = true;
+
+  return commitRunResult({
+    score: state.score,
+    logsClimbed: state.logsClimbed,
+    perfects: state.runSession.perfects,
+    goods: state.runSession.goods,
+    peakCombo: state.runSession.peakCombo,
+    reachedSummit: hasReachedSummit(state.logsClimbed),
+  });
+}
+
 export function isSkinUnlocked(skinId: PandaSkinId): boolean {
   if (UNLOCK_ALL_SKINS_FOR_TESTING) return true;
   const skin = PANDA_SKINS[skinId];

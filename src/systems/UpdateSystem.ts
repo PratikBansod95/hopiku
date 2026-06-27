@@ -4,25 +4,16 @@ import { refreshWardrobeIfOpen } from "@ui/wardrobe";
 import { hideHud, showGameOver } from "@ui/dom";
 import { checkCollisions } from "@systems/CollisionSystem";
 import { shake, updateShake } from "@systems/CameraShakeSystem";
+import { prunePlatformsBelowCamera } from "@systems/PlatformCleanup";
 import {
-  commitRunResult,
+  commitRunFromState,
   hasReachedSummit,
 } from "@services/ProgressionService";
 import { getSave } from "@services/SaveService";
 import type { UnlockDefinition } from "@config/progression.constants";
 
 function finalizeRun(state: RuntimeState): UnlockDefinition[] {
-  if (state.runCommitted) return [];
-  state.runCommitted = true;
-
-  return commitRunResult({
-    score: state.score,
-    logsClimbed: state.logsClimbed,
-    perfects: state.runSession.perfects,
-    goods: state.runSession.goods,
-    peakCombo: state.runSession.peakCombo,
-    reachedSummit: hasReachedSummit(state.logsClimbed),
-  });
+  return commitRunFromState(state);
 }
 
 export function updateGame(state: RuntimeState, dt: number, onJump: () => void): void {
@@ -43,6 +34,7 @@ export function updateGame(state: RuntimeState, dt: number, onJump: () => void):
     }
 
     checkCollisions(state, onJump);
+    prunePlatformsBelowCamera(state);
 
     const cameraEase = 1 - Math.exp(-8 * dt);
     state.cameraY += (state.targetCameraY - state.cameraY) * cameraEase;
@@ -75,7 +67,10 @@ export function updateGame(state: RuntimeState, dt: number, onJump: () => void):
       hideHud(state.dom);
       const newUnlocks = finalizeRun(state);
       state.highScore = getSave().highScore;
-      showGameOver(state.dom, state.score, state.highScore, newUnlocks);
+      const save = getSave();
+      const showSummit =
+        hasReachedSummit(state.logsClimbed) || save.stats.summitReached;
+      showGameOver(state.dom, state.score, state.highScore, newUnlocks, showSummit);
       refreshWardrobeIfOpen(state);
     }
   } else if (state.gamePhase === "DYING_TAUNT") {

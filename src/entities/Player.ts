@@ -1,6 +1,7 @@
 import { PHYSICS, SIZING, TIMING } from "@config/game.constants";
 import type { GamePhase, Layout } from "@core/types";
 import { drawSpriteCentered, spriteAspect } from "@services/AssetService";
+import type { Platform } from "@entities/Platform";
 
 export interface PlayerUpdateContext {
   gamePhase: GamePhase;
@@ -134,13 +135,13 @@ export class Player {
     layout: Layout,
     panda: HTMLImageElement,
     gamePhase: GamePhase,
-    platformYs: number[],
+    platforms: Platform[],
   ): void {
     const { blockHeight, playerWidth } = layout;
 
     let standOffset = 0;
-    for (let i = platformYs.length - 1; i >= 0; i -= 1) {
-      if (this.y <= platformYs[i] + 10) {
+    for (let i = platforms.length - 1; i >= 0; i -= 1) {
+      if (this.y <= platforms[i].y + 10) {
         if (i > 0) {
           standOffset = blockHeight * SIZING.playerHayStandOffsetRatio;
         }

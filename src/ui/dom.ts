@@ -5,7 +5,11 @@ export interface DomRefs {
   canvas: HTMLCanvasElement;
   uiLayer: HTMLElement;
   loadingScreen: HTMLElement;
+  loadingText: HTMLElement;
+  loadingError: HTMLElement;
+  loadingRetry: HTMLButtonElement;
   startScreen: HTMLElement;
+  lifetimeStats: HTMLElement;
   hud: HTMLElement;
   pauseScreen: HTMLElement;
   gameOverScreen: HTMLElement;
@@ -33,13 +37,19 @@ export interface DomRefs {
   zoneName: HTMLElement;
   logsCount: HTMLElement;
   unlockBanner: HTMLElement;
+  summitBadge: HTMLElement;
+  shareToast: HTMLElement;
 }
 
 export function getDomRefs(): DomRefs {
   const canvas = document.getElementById("gameCanvas");
   const uiLayer = document.getElementById("ui-layer");
   const loadingScreen = document.getElementById("loading-screen");
+  const loadingText = document.getElementById("loadingText");
+  const loadingError = document.getElementById("loadingError");
+  const loadingRetry = document.getElementById("loadingRetry");
   const startScreen = document.getElementById("startScreen");
+  const lifetimeStats = document.getElementById("lifetimeStats");
   const hud = document.getElementById("hud");
   const pauseScreen = document.getElementById("pause-screen");
   const gameOverScreen = document.getElementById("game-over-screen");
@@ -67,12 +77,18 @@ export function getDomRefs(): DomRefs {
   const zoneName = document.getElementById("zoneName");
   const logsCount = document.getElementById("logsCount");
   const unlockBanner = document.getElementById("unlockBanner");
+  const summitBadge = document.getElementById("summitBadge");
+  const shareToast = document.getElementById("shareToast");
 
   if (
     !canvas ||
     !uiLayer ||
     !loadingScreen ||
+    !loadingText ||
+    !loadingError ||
+    !loadingRetry ||
     !startScreen ||
+    !lifetimeStats ||
     !hud ||
     !pauseScreen ||
     !gameOverScreen ||
@@ -99,7 +115,9 @@ export function getDomRefs(): DomRefs {
     !zoneBadge ||
     !zoneName ||
     !logsCount ||
-    !unlockBanner
+    !unlockBanner ||
+    !summitBadge ||
+    !shareToast
   ) {
     throw new Error("Missing required DOM elements");
   }
@@ -108,7 +126,11 @@ export function getDomRefs(): DomRefs {
     canvas: canvas as HTMLCanvasElement,
     uiLayer,
     loadingScreen,
+    loadingText,
+    loadingError,
+    loadingRetry: loadingRetry as HTMLButtonElement,
     startScreen,
+    lifetimeStats,
     hud,
     pauseScreen,
     gameOverScreen,
@@ -136,6 +158,8 @@ export function getDomRefs(): DomRefs {
     zoneName,
     logsCount,
     unlockBanner,
+    summitBadge,
+    shareToast,
   };
 }
 
@@ -171,6 +195,10 @@ function getTaunt(score: number): { title: string; sub: string } {
 
 export function showLoading(dom: DomRefs): void {
   dom.loadingScreen.classList.remove("hidden");
+  dom.loadingText.classList.remove("hidden");
+  dom.loadingError.classList.add("hidden");
+  dom.loadingRetry.classList.add("hidden");
+  dom.loadingText.textContent = "Loading...";
   dom.startScreen.classList.add("hidden");
   dom.hud.classList.add("hidden");
   dom.pauseScreen.classList.add("hidden");
@@ -181,13 +209,28 @@ export function hideLoading(dom: DomRefs): void {
   dom.loadingScreen.classList.add("hidden");
 }
 
-export function showStart(dom: DomRefs, highScore: number): void {
+export function showLoadingError(dom: DomRefs, message: string): void {
+  dom.loadingText.classList.add("hidden");
+  dom.loadingError.textContent = message;
+  dom.loadingError.classList.remove("hidden");
+  dom.loadingRetry.classList.remove("hidden");
+}
+
+export function showStart(dom: DomRefs, highScore: number, lifetimeLine = ""): void {
   dom.startScreen.classList.remove("hidden");
   dom.hud.classList.add("hidden");
   dom.pauseScreen.classList.add("hidden");
   dom.gameOverScreen.classList.add("hidden");
   dom.zoneBadge.classList.add("hidden");
   dom.bestHud.textContent = highScore > 0 ? `BEST ${highScore}` : "";
+
+  if (lifetimeLine) {
+    dom.lifetimeStats.textContent = lifetimeLine;
+    dom.lifetimeStats.classList.remove("hidden");
+  } else {
+    dom.lifetimeStats.textContent = "";
+    dom.lifetimeStats.classList.add("hidden");
+  }
 }
 
 export function showPlaying(dom: DomRefs, highScore: number): void {
@@ -255,6 +298,7 @@ export function showGameOver(
   score: number,
   best: number,
   newUnlocks: UnlockDefinition[] = [],
+  showSummitBadge = false,
 ): void {
   dom.gameOverScreen.classList.remove("hidden");
   dom.finalScore.textContent = String(score);
@@ -269,6 +313,14 @@ export function showGameOver(
   } else {
     dom.unlockBanner.textContent = "";
     dom.unlockBanner.classList.add("hidden");
+  }
+
+  if (showSummitBadge) {
+    dom.summitBadge.textContent = "Summit reached — Sacred Summit unlocked!";
+    dom.summitBadge.classList.remove("hidden");
+  } else {
+    dom.summitBadge.textContent = "";
+    dom.summitBadge.classList.add("hidden");
   }
 
   dom.animBox.style.animation = "none";
@@ -297,6 +349,8 @@ export function hideGameOver(dom: DomRefs): void {
   dom.gameOverScreen.classList.add("hidden");
   dom.unlockBanner.classList.add("hidden");
   dom.unlockBanner.textContent = "";
+  dom.summitBadge.classList.add("hidden");
+  dom.summitBadge.textContent = "";
 }
 
 function syncSoundToggle(btn: HTMLButtonElement, enabled: boolean): void {

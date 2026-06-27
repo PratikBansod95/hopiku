@@ -19,7 +19,9 @@
 
     <div id="ui-layer">
       <div id="loading-screen">
-        <p class="loading-text">Loading...</p>
+        <p class="loading-text" id="loadingText">Loading...</p>
+        <p class="loading-error hidden" id="loadingError"></p>
+        <button id="loadingRetry" class="action-btn loading-retry hidden" type="button">Retry</button>
       </div>
 
       <div id="startScreen" class="hidden">
@@ -42,6 +44,7 @@
             />
           </h1>
           <p class="tagline">Hop Higher. Dream Bigger.</p>
+          <p id="lifetimeStats" class="lifetime-stats hidden"></p>
         </div>
         <p class="instruction" aria-hidden="true">
           <img
@@ -117,6 +120,7 @@
           </div>
 
           <p id="unlockBanner" class="go-unlock-banner hidden" aria-live="polite"></p>
+          <p id="summitBadge" class="go-summit-badge hidden" aria-live="polite"></p>
 
           <button id="btn-play-again" class="go-play-again" type="button">
             <span class="go-play-again-btn">
@@ -151,7 +155,7 @@
         </div>
       </div>
 
-      <p class="watermark">By: Pratik</p>
+      <p id="shareToast" class="share-toast hidden" role="status" aria-live="polite"></p>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

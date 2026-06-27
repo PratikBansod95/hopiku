@@ -139,8 +139,44 @@ function chromaKeyAndCrop(image: HTMLImageElement): Promise<HTMLImageElement> {
   });
 }
 
+function imageUsesNativeAlpha(image: HTMLImageElement): boolean {
+  const w = image.naturalWidth;
+  const h = image.naturalHeight;
+  if (w <= 0 || h <= 0) return false;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return false;
+
+  ctx.drawImage(image, 0, 0);
+  const { data } = ctx.getImageData(0, 0, w, h);
+
+  const samples: [number, number][] = [
+    [0, 0],
+    [w - 1, 0],
+    [0, h - 1],
+    [w - 1, h - 1],
+    [Math.floor(w / 2), 0],
+    [Math.floor(w / 2), h - 1],
+    [0, Math.floor(h / 2)],
+    [w - 1, Math.floor(h / 2)],
+  ];
+
+  let transparent = 0;
+  for (const [x, y] of samples) {
+    if (data[(y * w + x) * 4 + 3] < 200) transparent += 1;
+  }
+
+  return transparent >= 2;
+}
+
 async function loadTrimmed(src: string): Promise<HTMLImageElement> {
   const image = await loadImage(src);
+  if (imageUsesNativeAlpha(image)) {
+    return image;
+  }
   return chromaKeyAndCrop(image);
 }
 
@@ -164,14 +200,13 @@ async function buildSkinAtlas(): Promise<SkinAtlas> {
 }
 
 export async function loadGameAssets() {
-  const [panda, pandaDead, bambooPlatform, bambooStump, skins] = await Promise.all([
-    loadTrimmed(ASSET_PATHS.panda),
-    loadTrimmed(ASSET_PATHS.pandaDead),
+  const [bambooPlatform, bambooStump, skins] = await Promise.all([
     loadTrimmed(ASSET_PATHS.bambooPlatform),
     loadTrimmed(ASSET_PATHS.bambooStump),
     buildSkinAtlas(),
   ]);
 
+  const { panda, pandaDead } = skins.default;
   return { panda, pandaDead, bambooPlatform, bambooStump, skins };
 }
 

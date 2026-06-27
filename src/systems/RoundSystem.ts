@@ -9,8 +9,9 @@ import {
   updateZoneHud,
 } from "@ui/dom";
 import { createDefaultSpawnMemory, planSpawn } from "@world/spawn/SpawnPlanner";
-import { createDefaultRunSession } from "@services/ProgressionService";
-import { closeWardrobe } from "@ui/wardrobe";
+import { createDefaultRunSession, commitRunFromState, formatLifetimeStatsLine } from "@services/ProgressionService";
+import { getSave } from "@services/SaveService";
+import { closeWardrobe, refreshWardrobeIfOpen } from "@ui/wardrobe";
 
 export function isPerfectLanding(platform: Platform, layout: RuntimeState["layout"]): boolean {
   const tolerance = layout.blockWidth * platform.widthScale * PHYSICS.perfectTolerance;
@@ -45,6 +46,7 @@ export function resetRound(state: RuntimeState): void {
   state.logsClimbed = 0;
   state.runSession = createDefaultRunSession();
   state.runCommitted = false;
+  state.pauseSource = "none";
   closeWardrobe(state);
   state.spawnMemory = createDefaultSpawnMemory();
   state.background.reset();
@@ -53,7 +55,9 @@ export function resetRound(state: RuntimeState): void {
 
   resetScoreDisplay(state.dom, 0);
   hideGameOver(state.dom);
-  showStart(state.dom, state.highScore);
+  const save = getSave();
+  const lifetimeLine = formatLifetimeStatsLine(save.stats, save.unlocks.length);
+  showStart(state.dom, state.highScore, lifetimeLine);
   updateZoneHud(state.dom, "Bamboo Grove", 0);
 
   state.player.reset(state.layout.centerX, state.layout.canvasHeight);
@@ -83,5 +87,8 @@ export function performJump(state: RuntimeState): void {
 }
 
 export function goHome(state: RuntimeState): void {
+  commitRunFromState(state);
+  state.highScore = getSave().highScore;
+  refreshWardrobeIfOpen(state);
   resetRound(state);
 }

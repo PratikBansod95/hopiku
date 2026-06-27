@@ -97,10 +97,65 @@ canvas {
   text-align: center;
   color: #fff;
   font-size: 20px;
+}
+
+.loading-error {
+  position: absolute;
+  bottom: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(88vw, 320px);
+  margin: 0;
+  text-align: center;
+  color: #ffcdd2;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.loading-retry {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.lifetime-stats {
+  margin: 8px 0 0;
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.go-summit-badge {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 171, 64, 0.18);
+  color: #ffe0b2;
+  font-size: 13px;
   font-weight: 700;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  text-align: center;
+}
+
+.share-toast {
+  position: absolute;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 40;
+  max-width: min(90vw, 340px);
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.88);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .start-header {

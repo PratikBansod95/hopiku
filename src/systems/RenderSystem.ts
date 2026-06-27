@@ -39,7 +39,7 @@ export function renderGame(state: RuntimeState): void {
     layout,
     activeSkin.panda,
     state.gamePhase,
-    state.platforms.map((p) => p.y),
+    state.platforms,
   );
 
   if (state.gamePhase === "DYING_SMOKE" || state.gamePhase === "DYING_TAUNT" || state.gamePhase === "GAMEOVER") {

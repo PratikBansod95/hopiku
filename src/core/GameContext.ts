@@ -1,7 +1,7 @@
 import { Platform } from "@entities/Platform";
 import { Player } from "@entities/Player";
 import { Particles } from "@entities/Particles";
-import type { CameraShake, GameImages, GamePhase, Layout } from "@core/types";
+import type { CameraShake, GameImages, GamePhase, Layout, PauseSource } from "@core/types";
 import { Ambience } from "@world/Ambience";
 import { MenuAmbience } from "@world/MenuAmbience";
 import { BackgroundRenderer } from "@world/Background";
@@ -37,6 +37,7 @@ export interface RuntimeState {
   spawnMemory: SpawnMemory;
   feedback: FeedbackService;
   ytPaused: boolean;
+  pauseSource: PauseSource;
   runSession: RunSessionStats;
   runCommitted: boolean;
   equippedSkinId: string;
@@ -82,6 +83,7 @@ export function createRuntime(
     spawnMemory: createDefaultSpawnMemory(),
     feedback: new FeedbackService(),
     ytPaused: false,
+    pauseSource: "none",
     runSession: createDefaultRunSession(),
     runCommitted: false,
     equippedSkinId: getEquippedSkinId(),

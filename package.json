@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:playable": "npm run build && node scripts/package-playable.mjs",
+    "build:playable": "npm run compress:assets && npm run build && node scripts/package-playable.mjs",
     "generate:sfx": "node scripts/generate-sfx.mjs",
     "strip:ui": "python scripts/strip-ui-alpha.py",
     "generate:skins": "python scripts/generate-panda-skins.py",
     "import:skins": "python scripts/import-skin-assets.py",
+    "compress:assets": "python scripts/compress-assets.py",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -1,5 +1,6 @@
-import { PHYSICS } from "@config/game.constants";
 import type { RuntimeState } from "@core/GameContext";
+import type { PauseSource } from "@core/types";
+import { PHYSICS } from "@config/game.constants";
 import { hidePaused, showPaused } from "@ui/dom";
 import { instantRestart, startPlaying } from "@systems/RoundSystem";
 
@@ -29,16 +30,19 @@ export function handleTap(state: RuntimeState, onJump: () => void): void {
   }
 }
 
-export function pauseGame(state: RuntimeState): void {
+export function pauseGame(state: RuntimeState, source: PauseSource = "user"): void {
   if (state.gamePhase === "PLAYING") {
     state.gamePhase = "PAUSED";
+    state.pauseSource = source;
     showPaused(state.dom);
   }
 }
 
 export function resumeGame(state: RuntimeState): void {
+  if (state.ytPaused) return;
   if (state.gamePhase === "PAUSED") {
     state.gamePhase = "PLAYING";
+    state.pauseSource = "none";
     hidePaused(state.dom);
   }
 }
@@ -46,13 +50,13 @@ export function resumeGame(state: RuntimeState): void {
 export function handleYoutubePause(state: RuntimeState): void {
   state.ytPaused = true;
   if (state.gamePhase === "PLAYING") {
-    pauseGame(state);
+    pauseGame(state, "youtube");
   }
 }
 
 export function handleYoutubeResume(state: RuntimeState): void {
   state.ytPaused = false;
-  if (state.gamePhase === "PAUSED") {
+  if (state.gamePhase === "PAUSED" && state.pauseSource === "youtube") {
     resumeGame(state);
   }
 }
