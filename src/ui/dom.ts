@@ -2,6 +2,7 @@ import { SCORING, TAUNTS, TIMING } from "../game/constants";
 
 export interface DomRefs {
   canvas: HTMLCanvasElement;
+  uiLayer: HTMLElement;
   loadingScreen: HTMLElement;
   startScreen: HTMLElement;
   hud: HTMLElement;
@@ -21,8 +22,8 @@ export interface DomRefs {
   btnHome: HTMLButtonElement;
   btnPlayAgain: HTMLButtonElement;
   btnSound: HTMLButtonElement;
+  btnSoundHome: HTMLButtonElement;
   btnShare: HTMLButtonElement;
-  btnSettings: HTMLButtonElement;
   zoneBadge: HTMLElement;
   zoneName: HTMLElement;
   logsCount: HTMLElement;
@@ -30,6 +31,7 @@ export interface DomRefs {
 
 export function getDomRefs(): DomRefs {
   const canvas = document.getElementById("gameCanvas");
+  const uiLayer = document.getElementById("ui-layer");
   const loadingScreen = document.getElementById("loading-screen");
   const startScreen = document.getElementById("startScreen");
   const hud = document.getElementById("hud");
@@ -49,14 +51,15 @@ export function getDomRefs(): DomRefs {
   const btnHome = document.getElementById("btn-home");
   const btnPlayAgain = document.getElementById("btn-play-again");
   const btnSound = document.getElementById("btn-sound");
+  const btnSoundHome = document.getElementById("btn-sound-home");
   const btnShare = document.getElementById("btn-share");
-  const btnSettings = document.getElementById("btn-settings");
   const zoneBadge = document.getElementById("zoneBadge");
   const zoneName = document.getElementById("zoneName");
   const logsCount = document.getElementById("logsCount");
 
   if (
     !canvas ||
+    !uiLayer ||
     !loadingScreen ||
     !startScreen ||
     !hud ||
@@ -76,8 +79,8 @@ export function getDomRefs(): DomRefs {
     !btnHome ||
     !btnPlayAgain ||
     !btnSound ||
+    !btnSoundHome ||
     !btnShare ||
-    !btnSettings ||
     !zoneBadge ||
     !zoneName ||
     !logsCount
@@ -87,6 +90,7 @@ export function getDomRefs(): DomRefs {
 
   return {
     canvas: canvas as HTMLCanvasElement,
+    uiLayer,
     loadingScreen,
     startScreen,
     hud,
@@ -106,8 +110,8 @@ export function getDomRefs(): DomRefs {
     btnHome: btnHome as HTMLButtonElement,
     btnPlayAgain: btnPlayAgain as HTMLButtonElement,
     btnSound: btnSound as HTMLButtonElement,
+    btnSoundHome: btnSoundHome as HTMLButtonElement,
     btnShare: btnShare as HTMLButtonElement,
-    btnSettings: btnSettings as HTMLButtonElement,
     zoneBadge,
     zoneName,
     logsCount,
@@ -258,11 +262,16 @@ export function hideGameOver(dom: DomRefs): void {
   dom.gameOverScreen.classList.add("hidden");
 }
 
+function syncSoundToggle(btn: HTMLButtonElement, enabled: boolean): void {
+  btn.setAttribute("aria-pressed", String(enabled));
+  btn.setAttribute("aria-label", enabled ? "Mute sound" : "Unmute sound");
+  btn.querySelector(".sound-on")?.classList.toggle("hidden", !enabled);
+  btn.querySelector(".sound-off")?.classList.toggle("hidden", enabled);
+}
+
 export function syncSoundButton(dom: DomRefs, enabled: boolean): void {
-  dom.btnSound.setAttribute("aria-pressed", String(enabled));
-  dom.btnSound.setAttribute("aria-label", enabled ? "Mute sound" : "Unmute sound");
-  dom.btnSound.querySelector(".sound-on")?.classList.toggle("hidden", !enabled);
-  dom.btnSound.querySelector(".sound-off")?.classList.toggle("hidden", enabled);
+  syncSoundToggle(dom.btnSound, enabled);
+  syncSoundToggle(dom.btnSoundHome, enabled);
 }
 
 export { getComboReward };

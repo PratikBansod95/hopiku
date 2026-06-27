@@ -17,11 +17,19 @@ import {
   shareScore,
   updateGame,
 } from "./game/Game";
-import { getDomRefs, hideLoading, showLoading, syncSoundButton } from "./ui/dom";
+import { getDomRefs, hideLoading, showLoading, syncSoundButton, type DomRefs } from "./ui/dom";
 import { loadGameAssets, applyUiSprites } from "./utils/assets";
 import { flushSave, initSave } from "./save/SaveManager";
 import { BackgroundRenderer } from "./game/Background";
 import { playables } from "./youtube/PlayablesBridge";
+import type { RuntimeState } from "./game/Game";
+
+function toggleSound(state: RuntimeState, dom: DomRefs): void {
+  state.feedback.tap();
+  const enabled = !state.feedback.isAudioEnabled();
+  state.feedback.setAudioEnabled(enabled);
+  syncSoundButton(dom, enabled);
+}
 
 function bindInput(
   canvas: HTMLCanvasElement,
@@ -120,22 +128,18 @@ async function boot(): Promise<void> {
 
   dom.btnSound.addEventListener("click", (event) => {
     event.stopPropagation();
-    state.feedback.tap();
-    const enabled = !state.feedback.isAudioEnabled();
-    state.feedback.setAudioEnabled(enabled);
-    syncSoundButton(dom, enabled);
+    toggleSound(state, dom);
+  });
+
+  dom.btnSoundHome.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleSound(state, dom);
   });
 
   dom.btnShare.addEventListener("click", async (event) => {
     event.stopPropagation();
     state.feedback.tap();
     await shareScore(state.lastScore || state.score);
-  });
-
-  dom.btnSettings.addEventListener("click", (event) => {
-    event.stopPropagation();
-    state.feedback.tap();
-    alert("Settings coming in a future update.");
   });
 
   let lastFrame = 0;

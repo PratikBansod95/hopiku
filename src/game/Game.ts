@@ -8,6 +8,7 @@ import {
   TAGLINE,
   TIMING,
 } from "./constants";
+import { applyViewportFrame, bindViewportResize, getViewportSize } from "../utils/viewport";
 import { Platform } from "./Platform";
 import { Player } from "./Player";
 import { Particles } from "./Particles";
@@ -66,12 +67,13 @@ function resizeCanvas(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   panda: HTMLImageElement,
+  uiLayer: HTMLElement,
 ): Layout {
-  const dpr = window.devicePixelRatio || 1;
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
+  applyViewportFrame(canvas, uiLayer);
+  const { width: w, height: h } = getViewportSize();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return Player.computeLayout(w, h, panda);
 }
@@ -128,7 +130,7 @@ export function createRuntime(
   const ctx = dom.canvas.getContext("2d");
   if (!ctx) throw new Error("Could not acquire 2D context");
 
-  const layout = resizeCanvas(dom.canvas, ctx, images.panda);
+  const layout = resizeCanvas(dom.canvas, ctx, images.panda, dom.uiLayer);
   const player = new Player();
   const particles = new Particles();
   const ambience = new Ambience();
@@ -583,9 +585,12 @@ export function bindResize(state: RuntimeState): void {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  window.addEventListener("resize", () => {
-    state.layout = resizeCanvas(canvas, ctx, state.images.panda);
-  });
+  const onResize = () => {
+    state.layout = resizeCanvas(canvas, ctx, state.images.panda, state.dom.uiLayer);
+  };
+
+  bindViewportResize(onResize);
+  onResize();
 }
 
 export async function shareScore(score: number): Promise<void> {
