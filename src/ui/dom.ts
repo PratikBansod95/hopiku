@@ -9,7 +9,6 @@ export interface DomRefs {
   loadingError: HTMLElement;
   loadingRetry: HTMLButtonElement;
   startScreen: HTMLElement;
-  lifetimeStats: HTMLElement;
   hud: HTMLElement;
   pauseScreen: HTMLElement;
   gameOverScreen: HTMLElement;
@@ -49,7 +48,6 @@ export function getDomRefs(): DomRefs {
   const loadingError = document.getElementById("loadingError");
   const loadingRetry = document.getElementById("loadingRetry");
   const startScreen = document.getElementById("startScreen");
-  const lifetimeStats = document.getElementById("lifetimeStats");
   const hud = document.getElementById("hud");
   const pauseScreen = document.getElementById("pause-screen");
   const gameOverScreen = document.getElementById("game-over-screen");
@@ -88,7 +86,6 @@ export function getDomRefs(): DomRefs {
     !loadingError ||
     !loadingRetry ||
     !startScreen ||
-    !lifetimeStats ||
     !hud ||
     !pauseScreen ||
     !gameOverScreen ||
@@ -130,7 +127,6 @@ export function getDomRefs(): DomRefs {
     loadingError,
     loadingRetry: loadingRetry as HTMLButtonElement,
     startScreen,
-    lifetimeStats,
     hud,
     pauseScreen,
     gameOverScreen,
@@ -216,21 +212,13 @@ export function showLoadingError(dom: DomRefs, message: string): void {
   dom.loadingRetry.classList.remove("hidden");
 }
 
-export function showStart(dom: DomRefs, highScore: number, lifetimeLine = ""): void {
+export function showStart(dom: DomRefs, highScore: number): void {
   dom.startScreen.classList.remove("hidden");
   dom.hud.classList.add("hidden");
   dom.pauseScreen.classList.add("hidden");
   dom.gameOverScreen.classList.add("hidden");
   dom.zoneBadge.classList.add("hidden");
   dom.bestHud.textContent = highScore > 0 ? `BEST ${highScore}` : "";
-
-  if (lifetimeLine) {
-    dom.lifetimeStats.textContent = lifetimeLine;
-    dom.lifetimeStats.classList.remove("hidden");
-  } else {
-    dom.lifetimeStats.textContent = "";
-    dom.lifetimeStats.classList.add("hidden");
-  }
 }
 
 export function showPlaying(dom: DomRefs, highScore: number): void {

@@ -9,7 +9,7 @@ import {
   updateZoneHud,
 } from "@ui/dom";
 import { createDefaultSpawnMemory, planSpawn } from "@world/spawn/SpawnPlanner";
-import { createDefaultRunSession, commitRunFromState, formatLifetimeStatsLine } from "@services/ProgressionService";
+import { createDefaultRunSession, commitRunFromState } from "@services/ProgressionService";
 import { getSave } from "@services/SaveService";
 import { closeWardrobe, refreshWardrobeIfOpen } from "@ui/wardrobe";
 
@@ -55,9 +55,7 @@ export function resetRound(state: RuntimeState): void {
 
   resetScoreDisplay(state.dom, 0);
   hideGameOver(state.dom);
-  const save = getSave();
-  const lifetimeLine = formatLifetimeStatsLine(save.stats, save.unlocks.length);
-  showStart(state.dom, state.highScore, lifetimeLine);
+  showStart(state.dom, state.highScore);
   updateZoneHud(state.dom, "Bamboo Grove", 0);
 
   state.player.reset(state.layout.centerX, state.layout.canvasHeight);

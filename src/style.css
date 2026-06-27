@@ -120,15 +120,6 @@ canvas {
   pointer-events: auto;
 }
 
-.lifetime-stats {
-  margin: 8px 0 0;
-  font-size: clamp(11px, 3vw, 13px);
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  color: rgba(255, 255, 255, 0.82);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
-}
-
 .go-summit-badge {
   margin: 0 0 10px;
   padding: 8px 12px;

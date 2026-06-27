@@ -26,7 +26,6 @@ function createMockState(overrides: Partial<RuntimeState> = {}): RuntimeState {
     logsCount: { textContent: "" },
     scoreDisplay: { textContent: "", style: {} },
     bestHud: { textContent: "" },
-    lifetimeStats: { textContent: "", classList: { add: () => {}, remove: () => {} } },
     unlockBanner: { textContent: "", classList: { add: () => {}, remove: () => {} } },
     summitBadge: { textContent: "", classList: { add: () => {}, remove: () => {} } },
     wardrobeScreen: { classList: { add: () => {}, remove: () => {} } },
