@@ -2,6 +2,7 @@ import { describe, expect, it, beforeEach } from "vitest";
 import {
   DEFAULT_LIFETIME_STATS,
   UNLOCK_IDS,
+  UNLOCK_ALL_SKINS_FOR_TESTING,
 } from "@config/progression.constants";
 import { normalizeSave, writeSave, getSave, DEFAULT_SAVE } from "@services/SaveService";
 import {
@@ -109,6 +110,12 @@ describe("Skin progression", () => {
     expect(equipSkin("default")).toBe(true);
     expect(getEquippedSkinId()).toBe("default");
 
+    if (UNLOCK_ALL_SKINS_FOR_TESTING) {
+      expect(equipSkin("ninja")).toBe(true);
+      expect(getEquippedSkinId()).toBe("ninja");
+      return;
+    }
+
     expect(equipSkin("ninja")).toBe(false);
 
     writeSave({
@@ -127,6 +134,6 @@ describe("Skin progression", () => {
       unlocks: [],
       equippedSkin: "ninja",
     });
-    expect(migrated.equippedSkin).toBe("default");
+    expect(migrated.equippedSkin).toBe(UNLOCK_ALL_SKINS_FOR_TESTING ? "ninja" : "default");
   });
 });

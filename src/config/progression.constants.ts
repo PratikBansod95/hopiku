@@ -1,5 +1,8 @@
 import type { LifetimeStats } from "@core/types";
 
+/** Set false when real unlock rules are ready. */
+export const UNLOCK_ALL_SKINS_FOR_TESTING = true;
+
 export const SAVE_VERSION = 2;
 export const DEFAULT_SKIN_ID = "default";
 
@@ -88,6 +91,6 @@ export function sanitizeEquippedSkin(skinId: string, unlocks: string[]): PandaSk
   if (!(skinId in PANDA_SKINS)) return DEFAULT_SKIN_ID;
   const id = skinId as PandaSkinId;
   const skin = PANDA_SKINS[id];
-  if (!skin.unlockId) return id;
+  if (!skin.unlockId || UNLOCK_ALL_SKINS_FOR_TESTING) return id;
   return unlocks.includes(skin.unlockId) ? id : DEFAULT_SKIN_ID;
 }

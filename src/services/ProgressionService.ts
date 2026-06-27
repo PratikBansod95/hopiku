@@ -7,6 +7,7 @@ import {
   UNLOCK_DEFINITIONS,
   type PandaSkinId,
   type UnlockDefinition,
+  UNLOCK_ALL_SKINS_FOR_TESTING,
   sanitizeEquippedSkin,
 } from "@config/progression.constants";
 import { getSave, writeSave } from "@services/SaveService";
@@ -94,6 +95,7 @@ export function hasReachedSummit(logsClimbed: number): boolean {
 }
 
 export function isSkinUnlocked(skinId: PandaSkinId): boolean {
+  if (UNLOCK_ALL_SKINS_FOR_TESTING) return true;
   const skin = PANDA_SKINS[skinId];
   if (!skin.unlockId) return true;
   return getSave().unlocks.includes(skin.unlockId);
