@@ -91,3 +91,12 @@ export const ASSET_PATHS = {
   bambooPlatform: "./assets/images/bamboo-platform.png",
   bambooStump: "./assets/images/bamboo-stump.png",
 } as const;
+
+export const SFX_PATHS = {
+  tap: "./assets/audio/tap.wav",
+  jump: "./assets/audio/jump.wav",
+  land: "./assets/audio/land.wav",
+  perfect: "./assets/audio/perfect.wav",
+  death: "./assets/audio/death.wav",
+  impact: "./assets/audio/impact.wav",
+} as const;

@@ -1,10 +1,14 @@
-type ToneShape = OscillatorType;
+import { SFX_PATHS } from "../game/constants";
+
+type SfxKey = keyof typeof SFX_PATHS;
 
 export class SfxManager {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private unlocked = false;
   private enabled = true;
+  private buffers = new Map<SfxKey, AudioBuffer>();
+  private loadPromise: Promise<void> | null = null;
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
@@ -23,11 +27,13 @@ export class SfxManager {
     if (typeof window === "undefined" || !this.enabled) return;
 
     if (!this.ctx) {
-      const AudioCtx = window.AudioContext ?? (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext ??
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!AudioCtx) return;
       this.ctx = new AudioCtx();
       this.master = this.ctx.createGain();
-      this.master.gain.value = 0.32;
+      this.master.gain.value = 0.38;
       this.master.connect(this.ctx.destination);
     }
 
@@ -36,38 +42,82 @@ export class SfxManager {
     }
 
     this.unlocked = true;
+    void this.ensureBuffersLoaded();
   }
 
   playJump(): void {
-    this.playSweep(220, 520, 0.09, "sine", 0.22);
+    this.play("jump", () => this.playSweep(220, 520, 0.09, "sine", 0.22));
   }
 
   playLand(): void {
-    this.playTone(140, 0.11, "triangle", 0.28, 0.004);
+    this.play("land", () => this.playTone(140, 0.11, "triangle", 0.28, 0.004));
   }
 
   playPerfect(): void {
-    this.playTone(660, 0.07, "sine", 0.2, 0);
-    window.setTimeout(() => this.playTone(880, 0.09, "sine", 0.24, 0), 55);
+    this.play("perfect", () => {
+      this.playTone(660, 0.07, "sine", 0.2, 0);
+      window.setTimeout(() => this.playTone(880, 0.09, "sine", 0.24, 0), 55);
+    });
   }
 
   playDeath(): void {
-    this.playSweep(280, 90, 0.22, "sawtooth", 0.3);
+    this.play("death", () => this.playSweep(280, 90, 0.22, "sawtooth", 0.3));
   }
 
   playImpact(): void {
-    this.playTone(72, 0.18, "sine", 0.42, 0.002);
-    this.playNoiseBurst(0.12, 0.16);
+    this.play("impact", () => {
+      this.playTone(72, 0.18, "sine", 0.42, 0.002);
+      this.playNoiseBurst(0.12, 0.16);
+    });
   }
 
   playTap(): void {
-    this.playTone(420, 0.04, "sine", 0.12, 0);
+    this.play("tap", () => this.playTone(420, 0.04, "sine", 0.12, 0));
+  }
+
+  private play(key: SfxKey, fallback: () => void): void {
+    if (!this.enabled || !this.unlocked || !this.ctx || !this.master) return;
+
+    const buffer = this.buffers.get(key);
+    if (buffer) {
+      const source = this.ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(this.master);
+      source.start();
+      return;
+    }
+
+    fallback();
+  }
+
+  private async ensureBuffersLoaded(): Promise<void> {
+    if (!this.ctx || this.loadPromise) return;
+
+    this.loadPromise = (async () => {
+      const entries = Object.entries(SFX_PATHS) as [SfxKey, string][];
+      await Promise.all(
+        entries.map(async ([key, url]) => {
+          try {
+            const response = await fetch(url);
+            if (!response.ok) return;
+            const data = await response.arrayBuffer();
+            if (!this.ctx) return;
+            const buffer = await this.ctx.decodeAudioData(data.slice(0));
+            this.buffers.set(key, buffer);
+          } catch {
+            // Procedural fallback remains available per sound.
+          }
+        }),
+      );
+    })();
+
+    await this.loadPromise;
   }
 
   private playTone(
     frequency: number,
     duration: number,
-    shape: ToneShape,
+    shape: OscillatorType,
     volume: number,
     attack = 0.01,
   ): void {
@@ -93,7 +143,7 @@ export class SfxManager {
     from: number,
     to: number,
     duration: number,
-    shape: ToneShape,
+    shape: OscillatorType,
     volume: number,
   ): void {
     if (!this.enabled || !this.unlocked || !this.ctx || !this.master) return;

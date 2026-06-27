@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:playable": "npm run build && node scripts/package-playable.mjs",
+    "generate:sfx": "node scripts/generate-sfx.mjs",
     "preview": "vite preview"
   },
   "devDependencies": {
