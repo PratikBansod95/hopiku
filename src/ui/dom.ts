@@ -229,12 +229,20 @@ export function showGameOver(dom: DomRefs, score: number, best: number): void {
   dom.animBox.style.animation = "";
 
   if (best > 0) {
-    dom.bestScore.textContent =
+    const bestText = dom.bestScore.querySelector(".go-best-text");
+    const label =
       score >= best && score > 0 ? `NEW BEST — ${best}` : `BEST — ${best}`;
+    if (bestText) {
+      bestText.textContent = label;
+    } else {
+      dom.bestScore.textContent = label;
+    }
     dom.bestScore.classList.remove("hidden");
+    dom.bestScore.classList.toggle("go-best-new", score >= best && score > 0);
   } else {
     dom.bestScore.textContent = "";
     dom.bestScore.classList.add("hidden");
+    dom.bestScore.classList.remove("go-best-new");
   }
 }
 

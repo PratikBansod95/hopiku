@@ -8,7 +8,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 UI_DIR = ROOT / "public" / "assets" / "images"
-FILES = ("title-hopiku.png", "cta-tap-to-jump.png")
+FILES = ("title-hopiku.png", "cta-tap-to-jump.png", "cta-play-again.png")
 
 
 def is_bg(r: int, g: int, b: int, a: int) -> bool:
