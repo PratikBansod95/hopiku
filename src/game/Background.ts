@@ -59,17 +59,26 @@ export class BackgroundRenderer {
     height: number,
     cameraY: number,
   ): void {
+    const skyColor = this.getCurrentBiome().skyColor;
+    ctx.fillStyle = skyColor;
+    ctx.fillRect(0, 0, width, height);
+
+    // Parallax shifts the bg upward as the panda climbs. Scale must grow with
+    // parallax so the image always reaches the bottom of the canvas (no sky gap).
     const parallax = cameraY * 0.12;
 
     const drawBg = (img: HTMLImageElement, alpha: number) => {
-      if (!img.complete || alpha <= 0) return;
+      if (!img.complete || alpha <= 0 || img.naturalWidth <= 0) return;
       ctx.save();
       ctx.globalAlpha = alpha;
 
-      const scale = Math.max(width / img.naturalWidth, height / img.naturalHeight);
+      const scale = Math.max(
+        width / img.naturalWidth,
+        (height + parallax) / img.naturalHeight,
+      );
       const drawW = img.naturalWidth * scale;
       const drawH = img.naturalHeight * scale;
-      const offsetY = -parallax % (drawH * 0.25);
+      const offsetY = -parallax;
 
       ctx.drawImage(img, (width - drawW) / 2, offsetY, drawW, drawH);
       ctx.restore();
