@@ -1,6 +1,6 @@
 import type { PandaSkinId } from "@config/progression.constants";
 import { PANDA_SKINS, getSkinUnlockDescription } from "@config/progression.constants";
-import { SKIN_ORDER, SKIN_VISUALS } from "@config/skin.config";
+import { SKIN_BADGES, SKIN_ORDER } from "@config/skin.config";
 import type { RuntimeState } from "@core/GameContext";
 import { applyUiSprites } from "@services/AssetService";
 import {
@@ -10,7 +10,6 @@ import {
 } from "@services/ProgressionService";
 import { getSkinPreviewUrl } from "@services/SkinService";
 import type { DomRefs } from "@ui/dom";
-import { updateStartStats } from "@ui/dom";
 
 export function renderSkinGrid(state: RuntimeState): void {
   const { skinGrid } = state.dom;
@@ -19,7 +18,6 @@ export function renderSkinGrid(state: RuntimeState): void {
 
   for (const skinId of SKIN_ORDER) {
     const meta = PANDA_SKINS[skinId];
-    const visual = SKIN_VISUALS[skinId];
     const unlocked = isSkinUnlocked(skinId);
     const isEquipped = equipped === skinId;
     const sprites = state.images.skins[skinId];
@@ -42,7 +40,7 @@ export function renderSkinGrid(state: RuntimeState): void {
 
     const badge = document.createElement("span");
     badge.className = "skin-badge";
-    badge.textContent = visual.badgeEmoji;
+    badge.textContent = SKIN_BADGES[skinId];
 
     const name = document.createElement("span");
     name.className = "skin-name";
@@ -96,7 +94,11 @@ function tryEquipSkin(state: RuntimeState, skinId: PandaSkinId, onSkinChange: ()
   state.equippedSkinId = skinId;
   onSkinChange();
   renderSkinGrid(state);
-  updateStartStats(state.dom);
+}
+
+export function syncEquippedSkinUi(state: RuntimeState): void {
+  applyUiSprites(state.images, state.equippedSkinId);
+  refreshWardrobeIfOpen(state);
 }
 
 export function bindWardrobe(
@@ -129,10 +131,4 @@ export function bindWardrobe(
       closeWardrobe(state);
     }
   });
-}
-
-export function syncEquippedSkinUi(state: RuntimeState): void {
-  applyUiSprites(state.images, state.equippedSkinId);
-  updateStartStats(state.dom);
-  refreshWardrobeIfOpen(state);
 }

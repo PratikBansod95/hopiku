@@ -1,5 +1,5 @@
-import { ASSET_PATHS } from "@config/assets.manifest";
-import { buildSkinAtlas, resolveSkinSprites } from "@services/SkinService";
+import { ASSET_PATHS, SKIN_ASSET_PATHS } from "@config/assets.manifest";
+import { SKIN_ORDER, resolveSkinSprites, type SkinAtlas } from "@services/SkinService";
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -144,15 +144,33 @@ async function loadTrimmed(src: string): Promise<HTMLImageElement> {
   return chromaKeyAndCrop(image);
 }
 
+export async function loadTrimmedSprites(
+  pandaSrc: string,
+  deadSrc: string,
+): Promise<{ panda: HTMLImageElement; pandaDead: HTMLImageElement }> {
+  const [panda, pandaDead] = await Promise.all([loadTrimmed(pandaSrc), loadTrimmed(deadSrc)]);
+  return { panda, pandaDead };
+}
+
+async function buildSkinAtlas(): Promise<SkinAtlas> {
+  const entries = await Promise.all(
+    SKIN_ORDER.map(async (skinId) => {
+      const paths = SKIN_ASSET_PATHS[skinId];
+      const sprites = await loadTrimmedSprites(paths.panda, paths.pandaDead);
+      return [skinId, sprites] as const;
+    }),
+  );
+  return Object.fromEntries(entries) as SkinAtlas;
+}
+
 export async function loadGameAssets() {
-  const [panda, pandaDead, bambooPlatform, bambooStump] = await Promise.all([
+  const [panda, pandaDead, bambooPlatform, bambooStump, skins] = await Promise.all([
     loadTrimmed(ASSET_PATHS.panda),
     loadTrimmed(ASSET_PATHS.pandaDead),
     loadTrimmed(ASSET_PATHS.bambooPlatform),
     loadTrimmed(ASSET_PATHS.bambooStump),
+    buildSkinAtlas(),
   ]);
-
-  const skins = await buildSkinAtlas(panda, pandaDead);
 
   return { panda, pandaDead, bambooPlatform, bambooStump, skins };
 }

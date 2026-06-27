@@ -1,6 +1,4 @@
 import { SCORING, TAUNTS, TIMING } from "@config/game.constants";
-import { getSave } from "@services/SaveService";
-import { formatLifetimeStatsLine } from "@services/ProgressionService";
 import type { UnlockDefinition } from "@config/progression.constants";
 
 export interface DomRefs {
@@ -34,7 +32,6 @@ export interface DomRefs {
   zoneBadge: HTMLElement;
   zoneName: HTMLElement;
   logsCount: HTMLElement;
-  startStats: HTMLElement;
   unlockBanner: HTMLElement;
 }
 
@@ -69,7 +66,6 @@ export function getDomRefs(): DomRefs {
   const zoneBadge = document.getElementById("zoneBadge");
   const zoneName = document.getElementById("zoneName");
   const logsCount = document.getElementById("logsCount");
-  const startStats = document.getElementById("startStats");
   const unlockBanner = document.getElementById("unlockBanner");
 
   if (
@@ -103,7 +99,6 @@ export function getDomRefs(): DomRefs {
     !zoneBadge ||
     !zoneName ||
     !logsCount ||
-    !startStats ||
     !unlockBanner
   ) {
     throw new Error("Missing required DOM elements");
@@ -140,7 +135,6 @@ export function getDomRefs(): DomRefs {
     zoneBadge,
     zoneName,
     logsCount,
-    startStats,
     unlockBanner,
   };
 }
@@ -194,14 +188,6 @@ export function showStart(dom: DomRefs, highScore: number): void {
   dom.gameOverScreen.classList.add("hidden");
   dom.zoneBadge.classList.add("hidden");
   dom.bestHud.textContent = highScore > 0 ? `BEST ${highScore}` : "";
-  updateStartStats(dom);
-}
-
-export function updateStartStats(dom: DomRefs): void {
-  const save = getSave();
-  const line = formatLifetimeStatsLine(save.stats, save.unlocks.length);
-  dom.startStats.textContent = save.stats.runsPlayed > 0 || save.stats.totalPerfects > 0 ? line : "";
-  dom.startStats.classList.toggle("hidden", dom.startStats.textContent.length === 0);
 }
 
 export function showPlaying(dom: DomRefs, highScore: number): void {

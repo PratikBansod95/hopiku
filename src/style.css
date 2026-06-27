@@ -150,23 +150,6 @@ canvas {
   white-space: nowrap;
 }
 
-.start-stats {
-  margin: 0;
-  padding: 6px 14px;
-  font-size: clamp(11px, 2.8vw, 13px);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: rgba(255, 248, 225, 0.92);
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
-  background: rgba(27, 67, 50, 0.35);
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.start-stats.hidden {
-  display: none;
-}
-
 .instruction {
   position: absolute;
   bottom: max(12%, calc(12% + env(safe-area-inset-bottom, 0px)));
