@@ -1,4 +1,4 @@
-import { applyViewportFrame, bindViewportResize, getViewportSize } from "@utils/viewport";
+import { applyGameFrame, bindViewportResize, getGameFrame } from "@utils/viewport";
 import { Player } from "@entities/Player";
 import type { Layout } from "@core/types";
 
@@ -8,13 +8,13 @@ export function resizeCanvas(
   panda: HTMLImageElement,
   uiLayer: HTMLElement,
 ): Layout {
-  applyViewportFrame(canvas, uiLayer);
-  const { width: w, height: h } = getViewportSize();
+  applyGameFrame(canvas, uiLayer);
+  const frame = getGameFrame();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.round(w * dpr);
-  canvas.height = Math.round(h * dpr);
+  canvas.width = Math.round(frame.width * dpr);
+  canvas.height = Math.round(frame.height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return Player.computeLayout(w, h, panda);
+  return Player.computeLayout(frame.width, frame.height, panda);
 }
 
 export function bindResize(
