@@ -10,6 +10,7 @@
     "generate:sfx": "node scripts/generate-sfx.mjs",
     "strip:ui": "python scripts/strip-ui-alpha.py",
     "generate:skins": "python scripts/generate-panda-skins.py",
+    "import:skins": "python scripts/import-skin-assets.py",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

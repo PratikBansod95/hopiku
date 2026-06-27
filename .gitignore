@@ -1,6 +1,7 @@
 node_modules/
 dist/
 playable-package/
+assets/*-gen.png
 *.zip
 
 .DS_Store
