@@ -1,8 +1,7 @@
+import { defineConfig } from "vitest/config";
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "./",
   resolve: {
     alias: {
       "@app": fileURLToPath(new URL("./src/app", import.meta.url)),
@@ -17,13 +16,7 @@ export default defineConfig({
       "@utils": fileURLToPath(new URL("./src/utils", import.meta.url)),
     },
   },
-  build: {
-    target: "es2020",
-    assetsInlineLimit: 0,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
+  test: {
+    environment: "node",
   },
 });

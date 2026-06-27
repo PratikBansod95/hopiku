@@ -1,4 +1,4 @@
-import type { ComboTier, TauntTier } from "./types";
+import type { ComboTier, TauntTier } from "@core/types";
 
 export const GAME_TITLE = "Hopiku";
 export const TAGLINE = "Hop Higher. Dream Bigger.";
@@ -82,23 +82,4 @@ export const COLORS = {
   impactSmoke: "rgba(234, 179, 8, 0.8)",
   impactStar: "#facc15",
   floatingTextStroke: "#1b4332",
-} as const;
-
-export const ASSET_PATHS = {
-  background: "./assets/images/background.png",
-  panda: "./assets/images/panda.png",
-  pandaDead: "./assets/images/panda-dead.png",
-  bambooPlatform: "./assets/images/bamboo-platform.png",
-  bambooStump: "./assets/images/bamboo-stump.png",
-} as const;
-
-const audioBase = `${import.meta.env.BASE_URL}assets/audio`;
-
-export const SFX_PATHS = {
-  tap: `${audioBase}/tap.wav`,
-  jump: `${audioBase}/jump.wav`,
-  land: `${audioBase}/land.wav`,
-  perfect: `${audioBase}/perfect.wav`,
-  death: `${audioBase}/death.wav`,
-  impact: `${audioBase}/impact.wav`,
 } as const;

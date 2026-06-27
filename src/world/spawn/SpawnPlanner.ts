@@ -8,7 +8,7 @@ import {
   SPEED_TIER_MID,
   STEADY_CURVE,
 } from "./PlatformConfig";
-import type { Layout } from "./types";
+import type { Layout } from "@core/types";
 import type { PlatformSpawn, PlatformVariant, SpawnMemory } from "./platformTypes";
 
 function pickSlowCrossTime(): number {

@@ -1,6 +1,6 @@
-import { PHYSICS, SIZING, TIMING } from "./constants";
-import type { GamePhase, Layout } from "./types";
-import { drawSpriteCentered, spriteAspect } from "../utils/assets";
+import { PHYSICS, SIZING, TIMING } from "@config/game.constants";
+import type { GamePhase, Layout } from "@core/types";
+import { drawSpriteCentered, spriteAspect } from "@services/AssetService";
 
 export interface PlayerUpdateContext {
   gamePhase: GamePhase;

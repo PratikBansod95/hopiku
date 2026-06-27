@@ -1,13 +1,13 @@
-import { SfxManager } from "../audio/SfxManager";
+import { SfxManager } from "@services/SfxManager";
 import {
   hapticDeath,
   hapticImpact,
   hapticJump,
   hapticLand,
   hapticPerfect,
-} from "../utils/haptics";
+} from "@utils/haptics";
 
-export class Feedback {
+export class FeedbackService {
   private readonly sfx = new SfxManager();
 
   constructor() {

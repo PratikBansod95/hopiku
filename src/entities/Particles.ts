@@ -1,4 +1,4 @@
-import { COLORS, PHYSICS } from "./constants";
+import { COLORS, PHYSICS } from "@config/game.constants";
 
 interface RingParticle {
   type: "ring";

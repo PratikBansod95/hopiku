@@ -1,4 +1,4 @@
-import { SCORING, TAUNTS, TIMING } from "../game/constants";
+import { SCORING, TAUNTS, TIMING } from "@config/game.constants";
 
 export interface DomRefs {
   canvas: HTMLCanvasElement;

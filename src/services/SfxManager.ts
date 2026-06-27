@@ -1,4 +1,4 @@
-import { SFX_PATHS } from "../game/constants";
+import { SFX_PATHS } from "@config/assets.manifest";
 
 type SfxKey = keyof typeof SFX_PATHS;
 

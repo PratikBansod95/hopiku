@@ -1,5 +1,5 @@
-import type { SaveData } from "../game/types";
-import { playables } from "../youtube/PlayablesBridge";
+import type { SaveData } from "@core/types";
+import { playables } from "@platform/youtube/PlayablesBridge";
 
 const STORAGE_KEY = "hopiku-save";
 const LEGACY_STORAGE_KEY = "grove-rise-save";
@@ -48,7 +48,6 @@ function writeLocalSave(data: SaveData): void {
   }
 }
 
-/** Load save — awaits YouTube cloud data when in Playables env. */
 export async function initSave(): Promise<SaveData> {
   if (playables.isActive()) {
     const cloud = await playables.loadData();

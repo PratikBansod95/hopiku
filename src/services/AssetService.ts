@@ -1,4 +1,4 @@
-import { ASSET_PATHS } from "../game/constants";
+import { ASSET_PATHS } from "@config/assets.manifest";
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -13,7 +13,6 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 function isScreenGreenCandidate(r: number, g: number, b: number, a: number): boolean {
   if (a < 8) return true;
 
-  // Must be bright green dominant (neon #00FF00 family, not natural bamboo).
   if (g < 165) return false;
   if (r > 115 || b > 115) return false;
   if (g < r + 55 || g < b + 55) return false;
@@ -21,10 +20,6 @@ function isScreenGreenCandidate(r: number, g: number, b: number, a: number): boo
   return true;
 }
 
-/**
- * Only remove green connected to the image border (flood fill).
- * Interior bright greens on bamboo/logs stay opaque.
- */
 function keyScreenGreenFromEdges(data: Uint8ClampedArray, w: number, h: number): void {
   const total = w * h;
   const keyed = new Uint8Array(total);
@@ -64,7 +59,6 @@ function keyScreenGreenFromEdges(data: Uint8ClampedArray, w: number, h: number):
     data[idx * 4 + 3] = 0;
   }
 
-  // Light despill on opaque pixels directly bordering keyed green (edge fringe only).
   for (let y = 0; y < h; y += 1) {
     for (let x = 0; x < w; x += 1) {
       const idx = y * w + x;
@@ -162,7 +156,6 @@ export async function loadGameAssets() {
 
 export type GameAssets = Awaited<ReturnType<typeof loadGameAssets>>;
 
-/** Apply chroma-keyed sprite data URLs to DOM UI images (game-over panda, etc.). */
 export function applyUiSprites(assets: GameAssets): void {
   const src = assets.pandaDead.src;
   document.querySelectorAll<HTMLImageElement>(".go-panda-ui").forEach((el) => {

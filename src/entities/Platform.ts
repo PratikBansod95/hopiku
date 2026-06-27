@@ -1,8 +1,7 @@
-import { SIZING, TIMING } from "./constants";
-import type { Layout } from "./types";
-import { drawSpriteTopLeft, spriteAspect } from "../utils/assets";
-import type { GameImages } from "./types";
-import type { PlatformSpawn, PlatformVariant, SpeedCurve } from "./platformTypes";
+import { SIZING, TIMING } from "@config/game.constants";
+import type { Layout, GameImages } from "@core/types";
+import { drawSpriteTopLeft, spriteAspect } from "@services/AssetService";
+import type { PlatformSpawn, PlatformVariant, SpeedCurve } from "@world/spawn/platformTypes";
 
 export class Platform {
   index: number;
