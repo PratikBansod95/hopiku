@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "build:playable": "npm run build && node scripts/package-playable.mjs",
     "generate:sfx": "node scripts/generate-sfx.mjs",
+    "strip:ui": "python scripts/strip-ui-alpha.py",
     "preview": "vite preview"
   },
   "devDependencies": {
