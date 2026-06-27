@@ -101,14 +101,14 @@
             </div>
           </div>
 
-          <p id="taunt-restart" class="go-play-again" aria-hidden="true">
+          <button id="btn-play-again" class="go-play-again" type="button">
             <span class="go-play-again-btn">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 5V2L7 7l5 5V8c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 14c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 10.74A7.93 7.93 0 0 0 4 14c0 4.42 3.58 8 8 8v3l5-5-5-5v3z"/>
               </svg>
               Tap to Play Again
             </span>
-          </p>
+          </button>
 
           <div class="game-over-actions go-actions">
             <div class="go-action">
@@ -118,10 +118,11 @@
               <span class="go-action-label">Home</span>
             </div>
             <div class="go-action">
-              <button id="btn-restart" class="round-btn restart" type="button" aria-label="Restart">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V2L7 7l5 5V8c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 14c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 10.74A7.93 7.93 0 0 0 4 14c0 4.42 3.58 8 8 8v3l5-5-5-5v3z"/></svg>
+              <button id="btn-sound" class="round-btn sound" type="button" aria-label="Mute sound" aria-pressed="true">
+                <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.06c1.48-.74 2.5-2.26 2.5-4.03zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z"/></svg>
+                <svg class="sound-off hidden" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.63 3.63a.996.996 0 0 0 0 1.41L7.29 8.7 3 10v4h4l5 5v-6.59l4.18 4.18c-.19.07-.39.11-.59.11-.55 0-1-.45-1-1V9.41L3.63 3.63zM14 3.23v2.06c2.89.86 5 3.54 5 6.71 0 1.79-.68 3.42-1.79 4.66l1.42 1.42A8.954 8.954 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77z"/></svg>
               </button>
-              <span class="go-action-label">Retry</span>
+              <span class="go-action-label">Sound</span>
             </div>
             <div class="go-action">
               <button id="btn-share" class="round-btn share" type="button" aria-label="Share">

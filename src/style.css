@@ -343,31 +343,34 @@ canvas {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding-top: 52px;
 }
 
 .go-panda-peek {
-  position: relative;
-  z-index: 2;
-  width: clamp(100px, 28vw, 130px);
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  z-index: 3;
+  width: clamp(112px, 32vw, 148px);
   height: auto;
-  margin-bottom: -36px;
+  margin: 0;
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateX(-50%) translateY(10px);
   transition: opacity 0.25s ease, transform 0.25s ease;
-  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
   pointer-events: none;
 }
 
 .go-panda-ui.is-ready {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 .go-title-plank {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
-  padding: 22px 18px 16px;
+  padding: 24px 18px 16px;
   border-radius: 16px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 35%),
@@ -557,10 +560,16 @@ canvas {
 
 .go-play-again {
   margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
   width: 100%;
   display: flex;
   justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
   animation: goCtaPulse 2.8s ease-in-out infinite;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .go-play-again-btn {
@@ -712,6 +721,17 @@ canvas {
   width: 62px;
   height: 62px;
   background: linear-gradient(180deg, #ffb74d, #ef6c00);
+}
+
+.round-btn.sound {
+  background: linear-gradient(180deg, #ab47bc, #6a1b9a);
+}
+
+.round-btn.sound .sound-on,
+.round-btn.sound .sound-off {
+  width: 24px;
+  height: 24px;
+  fill: #fff;
 }
 
 .round-btn.share {

@@ -190,6 +190,11 @@ export function resetRound(state: RuntimeState): void {
   );
 }
 
+export function instantRestart(state: RuntimeState): void {
+  resetRound(state);
+  startPlaying(state);
+}
+
 export function startPlaying(state: RuntimeState): void {
   state.gamePhase = "PLAYING";
   state.menuAmbience.clear();
@@ -531,7 +536,7 @@ export function handleTap(state: RuntimeState, onJump: () => void): void {
   state.feedback.tap();
 
   if (state.gamePhase === "GAMEOVER") {
-    resetRound(state);
+    instantRestart(state);
     return;
   }
 

@@ -14,13 +14,13 @@ export interface DomRefs {
   animBox: HTMLElement;
   tauntTitle: HTMLElement;
   tauntSub: HTMLElement;
-  tauntRestart: HTMLElement;
   bestScore: HTMLElement;
   btnPause: HTMLButtonElement;
   btnResume: HTMLButtonElement;
   btnHomePause: HTMLButtonElement;
   btnHome: HTMLButtonElement;
-  btnRestart: HTMLButtonElement;
+  btnPlayAgain: HTMLButtonElement;
+  btnSound: HTMLButtonElement;
   btnShare: HTMLButtonElement;
   btnSettings: HTMLButtonElement;
   zoneBadge: HTMLElement;
@@ -42,13 +42,13 @@ export function getDomRefs(): DomRefs {
   const animBox = document.getElementById("anim-box");
   const tauntTitle = document.getElementById("taunt-title");
   const tauntSub = document.getElementById("taunt-sub");
-  const tauntRestart = document.getElementById("taunt-restart");
   const bestScore = document.getElementById("best-score");
   const btnPause = document.getElementById("btn-pause");
   const btnResume = document.getElementById("btn-resume");
   const btnHomePause = document.getElementById("btn-home-pause");
   const btnHome = document.getElementById("btn-home");
-  const btnRestart = document.getElementById("btn-restart");
+  const btnPlayAgain = document.getElementById("btn-play-again");
+  const btnSound = document.getElementById("btn-sound");
   const btnShare = document.getElementById("btn-share");
   const btnSettings = document.getElementById("btn-settings");
   const zoneBadge = document.getElementById("zoneBadge");
@@ -69,13 +69,13 @@ export function getDomRefs(): DomRefs {
     !animBox ||
     !tauntTitle ||
     !tauntSub ||
-    !tauntRestart ||
     !bestScore ||
     !btnPause ||
     !btnResume ||
     !btnHomePause ||
     !btnHome ||
-    !btnRestart ||
+    !btnPlayAgain ||
+    !btnSound ||
     !btnShare ||
     !btnSettings ||
     !zoneBadge ||
@@ -99,13 +99,13 @@ export function getDomRefs(): DomRefs {
     animBox,
     tauntTitle,
     tauntSub,
-    tauntRestart,
     bestScore,
     btnPause: btnPause as HTMLButtonElement,
     btnResume: btnResume as HTMLButtonElement,
     btnHomePause: btnHomePause as HTMLButtonElement,
     btnHome: btnHome as HTMLButtonElement,
-    btnRestart: btnRestart as HTMLButtonElement,
+    btnPlayAgain: btnPlayAgain as HTMLButtonElement,
+    btnSound: btnSound as HTMLButtonElement,
     btnShare: btnShare as HTMLButtonElement,
     btnSettings: btnSettings as HTMLButtonElement,
     zoneBadge,
@@ -256,6 +256,13 @@ export function showGameOver(dom: DomRefs, score: number, best: number): void {
 
 export function hideGameOver(dom: DomRefs): void {
   dom.gameOverScreen.classList.add("hidden");
+}
+
+export function syncSoundButton(dom: DomRefs, enabled: boolean): void {
+  dom.btnSound.setAttribute("aria-pressed", String(enabled));
+  dom.btnSound.setAttribute("aria-label", enabled ? "Mute sound" : "Unmute sound");
+  dom.btnSound.querySelector(".sound-on")?.classList.toggle("hidden", !enabled);
+  dom.btnSound.querySelector(".sound-off")?.classList.toggle("hidden", enabled);
 }
 
 export { getComboReward };

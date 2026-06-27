@@ -8,6 +8,7 @@ import {
   handleTap,
   handleYoutubePause,
   handleYoutubeResume,
+  instantRestart,
   pauseGame,
   performJump,
   renderGame,
@@ -16,7 +17,7 @@ import {
   shareScore,
   updateGame,
 } from "./game/Game";
-import { getDomRefs, hideLoading, showLoading } from "./ui/dom";
+import { getDomRefs, hideLoading, showLoading, syncSoundButton } from "./ui/dom";
 import { loadGameAssets, applyUiSprites } from "./utils/assets";
 import { flushSave, initSave } from "./save/SaveManager";
 import { BackgroundRenderer } from "./game/Background";
@@ -71,8 +72,11 @@ async function boot(): Promise<void> {
     },
     onAudioChange: (enabled) => {
       state.feedback.setAudioEnabled(enabled);
+      syncSoundButton(dom, enabled);
     },
   });
+
+  syncSoundButton(dom, state.feedback.isAudioEnabled());
 
   hideLoading(dom);
   resetRound(state);
@@ -108,11 +112,18 @@ async function boot(): Promise<void> {
     goHome(state);
   });
 
-  dom.btnRestart.addEventListener("click", (event) => {
+  dom.btnPlayAgain.addEventListener("click", (event) => {
     event.stopPropagation();
     state.feedback.tap();
-    resetRound(state);
-    startFromRestart(state, onJump);
+    instantRestart(state);
+  });
+
+  dom.btnSound.addEventListener("click", (event) => {
+    event.stopPropagation();
+    state.feedback.tap();
+    const enabled = !state.feedback.isAudioEnabled();
+    state.feedback.setAudioEnabled(enabled);
+    syncSoundButton(dom, enabled);
   });
 
   dom.btnShare.addEventListener("click", async (event) => {
@@ -144,10 +155,6 @@ async function boot(): Promise<void> {
   requestAnimationFrame(loop);
 
   window.addEventListener("beforeunload", unbindCanvas);
-}
-
-function startFromRestart(state: ReturnType<typeof createRuntime>, onJump: () => void): void {
-  handleTap(state, onJump);
 }
 
 if (document.readyState === "loading") {

@@ -52,4 +52,8 @@ export class Feedback {
   setAudioEnabled(enabled: boolean): void {
     this.sfx.setEnabled(enabled);
   }
+
+  isAudioEnabled(): boolean {
+    return this.sfx.isEnabled();
+  }
 }
