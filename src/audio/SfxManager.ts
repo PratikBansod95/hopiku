@@ -8,13 +8,29 @@ export class SfxManager {
   private unlocked = false;
   private enabled = true;
   private buffers = new Map<SfxKey, AudioBuffer>();
+  private pendingData = new Map<SfxKey, ArrayBuffer>();
   private loadPromise: Promise<void> | null = null;
+
+  preload(): void {
+    const entries = Object.entries(SFX_PATHS) as [SfxKey, string][];
+    for (const [key, url] of entries) {
+      if (this.pendingData.has(key) || this.buffers.has(key)) continue;
+      void fetch(url)
+        .then((response) => (response.ok ? response.arrayBuffer() : null))
+        .then((data) => {
+          if (data) this.pendingData.set(key, data);
+        })
+        .catch(() => {
+          // Procedural fallback remains available per sound.
+        });
+    }
+  }
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     if (!enabled && this.ctx?.state === "running") {
       void this.ctx.suspend();
-    } else if (enabled && this.ctx?.state === "suspended") {
+    } else if (enabled && this.ctx?.state === "suspended" && this.unlocked) {
       void this.ctx.resume();
     }
   }
@@ -24,25 +40,7 @@ export class SfxManager {
   }
 
   unlock(): void {
-    if (typeof window === "undefined" || !this.enabled) return;
-
-    if (!this.ctx) {
-      const AudioCtx =
-        window.AudioContext ??
-        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      if (!AudioCtx) return;
-      this.ctx = new AudioCtx();
-      this.master = this.ctx.createGain();
-      this.master.gain.value = 0.38;
-      this.master.connect(this.ctx.destination);
-    }
-
-    if (this.ctx.state === "suspended") {
-      void this.ctx.resume();
-    }
-
-    this.unlocked = true;
-    void this.ensureBuffersLoaded();
+    void this.unlockAsync();
   }
 
   playJump(): void {
@@ -75,8 +73,48 @@ export class SfxManager {
     this.play("tap", () => this.playTone(420, 0.04, "sine", 0.12, 0));
   }
 
+  private async unlockAsync(): Promise<void> {
+    if (typeof window === "undefined" || !this.enabled) return;
+
+    if (!this.ctx) {
+      const AudioCtx =
+        window.AudioContext ??
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      this.ctx = new AudioCtx();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.38;
+      this.master.connect(this.ctx.destination);
+    }
+
+    try {
+      if (this.ctx.state === "suspended") {
+        await this.ctx.resume();
+      }
+    } catch {
+      // Browser may block until a later gesture; play() will retry resume.
+    }
+
+    this.unlocked = true;
+    void this.ensureBuffersLoaded();
+  }
+
   private play(key: SfxKey, fallback: () => void): void {
+    void this.playAsync(key, fallback);
+  }
+
+  private async playAsync(key: SfxKey, fallback: () => void): Promise<void> {
     if (!this.enabled || !this.unlocked || !this.ctx || !this.master) return;
+
+    try {
+      if (this.ctx.state !== "running") {
+        await this.ctx.resume();
+      }
+    } catch {
+      return;
+    }
+
+    if (this.ctx.state !== "running") return;
 
     const buffer = this.buffers.get(key);
     if (buffer) {
@@ -88,6 +126,7 @@ export class SfxManager {
     }
 
     fallback();
+    void this.ensureBuffersLoaded();
   }
 
   private async ensureBuffersLoaded(): Promise<void> {
@@ -97,13 +136,15 @@ export class SfxManager {
       const entries = Object.entries(SFX_PATHS) as [SfxKey, string][];
       await Promise.all(
         entries.map(async ([key, url]) => {
+          if (this.buffers.has(key)) return;
           try {
-            const response = await fetch(url);
-            if (!response.ok) return;
-            const data = await response.arrayBuffer();
-            if (!this.ctx) return;
+            const data =
+              this.pendingData.get(key) ??
+              (await fetch(url).then((response) => (response.ok ? response.arrayBuffer() : null)));
+            if (!data || !this.ctx) return;
             const buffer = await this.ctx.decodeAudioData(data.slice(0));
             this.buffers.set(key, buffer);
+            this.pendingData.delete(key);
           } catch {
             // Procedural fallback remains available per sound.
           }

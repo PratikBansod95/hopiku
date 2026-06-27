@@ -10,6 +10,10 @@ import {
 export class Feedback {
   private readonly sfx = new SfxManager();
 
+  constructor() {
+    this.sfx.preload();
+  }
+
   unlock(): void {
     this.sfx.unlock();
   }

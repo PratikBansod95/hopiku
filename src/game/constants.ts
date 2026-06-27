@@ -92,11 +92,13 @@ export const ASSET_PATHS = {
   bambooStump: "./assets/images/bamboo-stump.png",
 } as const;
 
+const audioBase = `${import.meta.env.BASE_URL}assets/audio`;
+
 export const SFX_PATHS = {
-  tap: "./assets/audio/tap.wav",
-  jump: "./assets/audio/jump.wav",
-  land: "./assets/audio/land.wav",
-  perfect: "./assets/audio/perfect.wav",
-  death: "./assets/audio/death.wav",
-  impact: "./assets/audio/impact.wav",
+  tap: `${audioBase}/tap.wav`,
+  jump: `${audioBase}/jump.wav`,
+  land: `${audioBase}/land.wav`,
+  perfect: `${audioBase}/perfect.wav`,
+  death: `${audioBase}/death.wav`,
+  impact: `${audioBase}/impact.wav`,
 } as const;

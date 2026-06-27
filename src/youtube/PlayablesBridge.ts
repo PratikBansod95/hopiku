@@ -19,7 +19,7 @@ export class PlayablesBridge {
     onResume: PauseHandler;
     onAudioChange: AudioHandler;
   }): void {
-    if (!hasSdk()) return;
+    if (!hasSdk() || !this.isActive()) return;
 
     ytgame.system.onPause(handlers.onPause);
     ytgame.system.onResume(handlers.onResume);
