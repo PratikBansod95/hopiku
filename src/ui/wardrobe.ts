@@ -1,6 +1,6 @@
 import type { PandaSkinId } from "@config/progression.constants";
 import { PANDA_SKINS, getSkinUnlockDescription } from "@config/progression.constants";
-import { SKIN_BADGES, SKIN_ORDER } from "@config/skin.config";
+import { SKIN_BADGES, SKIN_ORDER, UPCOMING_SKIN } from "@config/skin.config";
 import type { RuntimeState } from "@core/GameContext";
 import { applyUiSprites } from "@services/AssetService";
 import {
@@ -67,6 +67,33 @@ export function renderSkinGrid(state: RuntimeState): void {
 
     skinGrid.append(card);
   }
+
+  appendUpcomingSkinCard(skinGrid);
+}
+
+function appendUpcomingSkinCard(skinGrid: HTMLElement): void {
+  const card = document.createElement("div");
+  card.className = "skin-card skin-card-upcoming";
+  card.setAttribute("aria-label", UPCOMING_SKIN.name);
+
+  const preview = document.createElement("div");
+  preview.className = "skin-preview skin-preview-upcoming";
+  preview.textContent = UPCOMING_SKIN.badgeEmoji;
+
+  const badge = document.createElement("span");
+  badge.className = "skin-badge";
+  badge.textContent = "✨";
+
+  const name = document.createElement("span");
+  name.className = "skin-name";
+  name.textContent = UPCOMING_SKIN.name;
+
+  const status = document.createElement("span");
+  status.className = "skin-status";
+  status.textContent = UPCOMING_SKIN.teaser;
+
+  card.append(preview, badge, name, status);
+  skinGrid.append(card);
 }
 
 export function openWardrobe(state: RuntimeState): void {

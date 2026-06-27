@@ -367,6 +367,23 @@ canvas {
   filter: grayscale(0.35);
 }
 
+.skin-card-upcoming {
+  cursor: default;
+  border-style: dashed;
+  border-color: rgba(46, 125, 50, 0.45);
+  background: rgba(255, 255, 255, 0.45);
+  opacity: 0.92;
+}
+
+.skin-preview-upcoming {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  line-height: 1;
+  filter: none;
+}
+
 .skin-preview {
   width: 72px;
   height: 72px;

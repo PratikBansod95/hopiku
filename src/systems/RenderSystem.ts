@@ -11,20 +11,6 @@ function isVisible(y: number, blockHeight: number, cameraY: number, layout: Layo
   );
 }
 
-function drawJumpTrail(state: RuntimeState, ctx: CanvasRenderingContext2D): void {
-  if (!state.player.isJumping || state.player.isDead) return;
-
-  ctx.save();
-  ctx.strokeStyle = "rgba(255,255,255,0.35)";
-  ctx.lineWidth = 2;
-  ctx.setLineDash([4, 8]);
-  ctx.beginPath();
-  ctx.moveTo(state.player.x, state.player.y);
-  ctx.lineTo(state.player.x, state.player.y + 80);
-  ctx.stroke();
-  ctx.restore();
-}
-
 export function renderGame(state: RuntimeState): void {
   const canvas = state.dom.canvas;
   const ctx = canvas.getContext("2d");
@@ -45,8 +31,6 @@ export function renderGame(state: RuntimeState): void {
       platform.draw(ctx, layout, state.images);
     }
   }
-
-  drawJumpTrail(state, ctx);
 
   const activeSkin = resolveSkinSprites(state.images.skins, state.equippedSkinId);
 

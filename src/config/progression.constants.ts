@@ -1,7 +1,7 @@
 import type { LifetimeStats } from "@core/types";
 
 /** Set false when real unlock rules are ready. */
-export const UNLOCK_ALL_SKINS_FOR_TESTING = true;
+export const UNLOCK_ALL_SKINS_FOR_TESTING = false;
 
 export const SAVE_VERSION = 2;
 export const DEFAULT_SKIN_ID = "default";
@@ -18,6 +18,14 @@ export const DEFAULT_LIFETIME_STATS: LifetimeStats = {
 
 /** Logs required to reach Sacred Summit (last biome). */
 export const SUMMIT_UNLOCK_LOGS = 54;
+
+/** Best single-run score required to unlock each skin. */
+export const SKIN_UNLOCK_SCORES = {
+  ninja: 40,
+  cloud: 100,
+  summit: 180,
+  golden: 300,
+} as const;
 
 export const UNLOCK_IDS = {
   GOLDEN_PANDA: "golden_panda",
@@ -38,32 +46,32 @@ export interface UnlockDefinition {
 
 export const UNLOCK_DEFINITIONS: UnlockDefinition[] = [
   {
-    id: UNLOCK_IDS.GOLDEN_PANDA,
-    name: "Golden Panda",
-    description: "Land 100 perfect hops (lifetime)",
-    skinId: "golden",
-    check: (stats) => stats.totalPerfects >= 100,
-  },
-  {
     id: UNLOCK_IDS.NINJA_PANDA,
     name: "Ninja Panda",
-    description: "Score 50+ in a single run",
+    description: `Score ${SKIN_UNLOCK_SCORES.ninja}+ in one run`,
     skinId: "ninja",
-    check: (_stats, highScore) => highScore >= 50,
+    check: (_stats, highScore) => highScore >= SKIN_UNLOCK_SCORES.ninja,
   },
   {
     id: UNLOCK_IDS.CLOUD_PANDA,
     name: "Cloud Panda",
-    description: "Reach the Cloud Realm (36 logs in one run)",
+    description: `Score ${SKIN_UNLOCK_SCORES.cloud}+ in one run`,
     skinId: "cloud",
-    check: (stats) => stats.bestLogsInRun >= 36,
+    check: (_stats, highScore) => highScore >= SKIN_UNLOCK_SCORES.cloud,
   },
   {
     id: UNLOCK_IDS.SUMMIT_PIONEER,
-    name: "Summit Pioneer",
-    description: "Reach Sacred Summit (54 logs in one run)",
+    name: "Summit Panda",
+    description: `Score ${SKIN_UNLOCK_SCORES.summit}+ in one run`,
     skinId: "summit",
-    check: (stats) => stats.summitReached,
+    check: (_stats, highScore) => highScore >= SKIN_UNLOCK_SCORES.summit,
+  },
+  {
+    id: UNLOCK_IDS.GOLDEN_PANDA,
+    name: "Golden Panda",
+    description: `Score ${SKIN_UNLOCK_SCORES.golden}+ in one run`,
+    skinId: "golden",
+    check: (_stats, highScore) => highScore >= SKIN_UNLOCK_SCORES.golden,
   },
 ];
 

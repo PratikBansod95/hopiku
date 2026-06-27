@@ -1,8 +1,8 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import {
   DEFAULT_LIFETIME_STATS,
+  SKIN_UNLOCK_SCORES,
   UNLOCK_IDS,
-  UNLOCK_ALL_SKINS_FOR_TESTING,
 } from "@config/progression.constants";
 import { normalizeSave, writeSave, getSave, DEFAULT_SAVE } from "@services/SaveService";
 import {
@@ -67,9 +67,9 @@ describe("ProgressionService", () => {
     expect(save.highScore).toBe(25);
   });
 
-  it("unlocks ninja panda at score 50+", () => {
+  it("unlocks ninja panda at score 40+", () => {
     const unlocked = commitRunResult({
-      score: 50,
+      score: SKIN_UNLOCK_SCORES.ninja,
       logsClimbed: 20,
       perfects: 15,
       goods: 5,
@@ -81,9 +81,8 @@ describe("ProgressionService", () => {
     expect(unlocked.some((def) => def.id === UNLOCK_IDS.NINJA_PANDA)).toBe(true);
   });
 
-  it("evaluates golden panda from lifetime perfects", () => {
-    const stats = { ...DEFAULT_LIFETIME_STATS, totalPerfects: 100 };
-    const ids = evaluateUnlocks(stats, 0, []);
+  it("unlocks golden panda at score 300+", () => {
+    const ids = evaluateUnlocks(DEFAULT_LIFETIME_STATS, SKIN_UNLOCK_SCORES.golden, []);
     expect(ids).toContain(UNLOCK_IDS.GOLDEN_PANDA);
   });
 
@@ -110,12 +109,6 @@ describe("Skin progression", () => {
     expect(equipSkin("default")).toBe(true);
     expect(getEquippedSkinId()).toBe("default");
 
-    if (UNLOCK_ALL_SKINS_FOR_TESTING) {
-      expect(equipSkin("ninja")).toBe(true);
-      expect(getEquippedSkinId()).toBe("ninja");
-      return;
-    }
-
     expect(equipSkin("ninja")).toBe(false);
 
     writeSave({
@@ -134,6 +127,6 @@ describe("Skin progression", () => {
       unlocks: [],
       equippedSkin: "ninja",
     });
-    expect(migrated.equippedSkin).toBe(UNLOCK_ALL_SKINS_FOR_TESTING ? "ninja" : "default");
+    expect(migrated.equippedSkin).toBe("default");
   });
 });
