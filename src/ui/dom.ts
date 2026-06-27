@@ -205,16 +205,16 @@ export function hideHud(dom: DomRefs): void {
 export function updateScore(dom: DomRefs, score: number, pop = true): void {
   dom.scoreDisplay.textContent = String(score);
   if (pop) {
-    dom.scoreContainer.style.transform = "scale(1.2)";
+    dom.scoreDisplay.style.transform = "scale(1.2)";
     window.setTimeout(() => {
-      dom.scoreContainer.style.transform = "scale(1)";
+      dom.scoreDisplay.style.transform = "scale(1)";
     }, TIMING.scorePopDurationMs);
   }
 }
 
 export function resetScoreDisplay(dom: DomRefs, score: number): void {
   dom.scoreDisplay.textContent = String(score);
-  dom.scoreContainer.style.transform = "scale(1)";
+  dom.scoreDisplay.style.transform = "scale(1)";
 }
 
 export function showGameOver(dom: DomRefs, score: number, best: number): void {
