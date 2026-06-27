@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GAME_ASPECT, MAX_GAME_WIDTH, getGameFrame } from "@utils/viewport";
+import { MAX_GAME_WIDTH, getGameFrame } from "@utils/viewport";
 
 describe("getGameFrame", () => {
   it("uses full width on a typical phone", () => {
