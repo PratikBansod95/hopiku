@@ -27,6 +27,10 @@ export interface DomRefs {
   btnSound: HTMLButtonElement;
   btnSoundHome: HTMLButtonElement;
   btnShare: HTMLButtonElement;
+  btnWardrobe: HTMLButtonElement;
+  btnWardrobeClose: HTMLButtonElement;
+  wardrobeScreen: HTMLElement;
+  skinGrid: HTMLElement;
   zoneBadge: HTMLElement;
   zoneName: HTMLElement;
   logsCount: HTMLElement;
@@ -58,6 +62,10 @@ export function getDomRefs(): DomRefs {
   const btnSound = document.getElementById("btn-sound");
   const btnSoundHome = document.getElementById("btn-sound-home");
   const btnShare = document.getElementById("btn-share");
+  const btnWardrobe = document.getElementById("btn-wardrobe");
+  const btnWardrobeClose = document.getElementById("btn-wardrobe-close");
+  const wardrobeScreen = document.getElementById("wardrobe-screen");
+  const skinGrid = document.getElementById("skinGrid");
   const zoneBadge = document.getElementById("zoneBadge");
   const zoneName = document.getElementById("zoneName");
   const logsCount = document.getElementById("logsCount");
@@ -88,6 +96,10 @@ export function getDomRefs(): DomRefs {
     !btnSound ||
     !btnSoundHome ||
     !btnShare ||
+    !btnWardrobe ||
+    !btnWardrobeClose ||
+    !wardrobeScreen ||
+    !skinGrid ||
     !zoneBadge ||
     !zoneName ||
     !logsCount ||
@@ -121,6 +133,10 @@ export function getDomRefs(): DomRefs {
     btnSound: btnSound as HTMLButtonElement,
     btnSoundHome: btnSoundHome as HTMLButtonElement,
     btnShare: btnShare as HTMLButtonElement,
+    btnWardrobe: btnWardrobe as HTMLButtonElement,
+    btnWardrobeClose: btnWardrobeClose as HTMLButtonElement,
+    wardrobeScreen,
+    skinGrid,
     zoneBadge,
     zoneName,
     logsCount,

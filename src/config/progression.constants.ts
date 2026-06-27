@@ -72,6 +72,22 @@ export const PANDA_SKINS = {
   summit: { id: "summit", name: "Summit Panda", unlockId: UNLOCK_IDS.SUMMIT_PIONEER },
 } as const;
 
+export type PandaSkinId = keyof typeof PANDA_SKINS;
+
 export function getUnlockDefinition(id: string): UnlockDefinition | undefined {
   return UNLOCK_DEFINITIONS.find((def) => def.id === id);
+}
+
+export function getSkinUnlockDescription(skinId: PandaSkinId): string {
+  const skin = PANDA_SKINS[skinId];
+  if (!skin.unlockId) return "Always available";
+  return getUnlockDefinition(skin.unlockId)?.description ?? "Complete a challenge";
+}
+
+export function sanitizeEquippedSkin(skinId: string, unlocks: string[]): PandaSkinId {
+  if (!(skinId in PANDA_SKINS)) return DEFAULT_SKIN_ID;
+  const id = skinId as PandaSkinId;
+  const skin = PANDA_SKINS[id];
+  if (!skin.unlockId) return id;
+  return unlocks.includes(skin.unlockId) ? id : DEFAULT_SKIN_ID;
 }

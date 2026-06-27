@@ -4,6 +4,8 @@ import { hidePaused, showPaused } from "@ui/dom";
 import { instantRestart, startPlaying } from "@systems/RoundSystem";
 
 export function handleTap(state: RuntimeState, onJump: () => void): void {
+  if (state.wardrobeOpen) return;
+
   state.feedback.tap();
 
   if (state.gamePhase === "GAMEOVER") {

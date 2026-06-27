@@ -1,4 +1,5 @@
 import { ASSET_PATHS } from "@config/assets.manifest";
+import { buildSkinAtlas, resolveSkinSprites } from "@services/SkinService";
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -151,13 +152,16 @@ export async function loadGameAssets() {
     loadTrimmed(ASSET_PATHS.bambooStump),
   ]);
 
-  return { panda, pandaDead, bambooPlatform, bambooStump };
+  const skins = await buildSkinAtlas(panda, pandaDead);
+
+  return { panda, pandaDead, bambooPlatform, bambooStump, skins };
 }
 
 export type GameAssets = Awaited<ReturnType<typeof loadGameAssets>>;
 
-export function applyUiSprites(assets: GameAssets): void {
-  const src = assets.pandaDead.src;
+export function applyUiSprites(assets: GameAssets, skinId?: string): void {
+  const dead = skinId ? resolveSkinSprites(assets.skins, skinId).pandaDead : assets.pandaDead;
+  const src = dead.src;
   document.querySelectorAll<HTMLImageElement>(".go-panda-ui").forEach((el) => {
     const reveal = () => el.classList.add("is-ready");
     el.onload = reveal;

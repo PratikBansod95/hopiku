@@ -4,6 +4,10 @@ import { bindResize } from "@core/CanvasResize";
 import { BackgroundRenderer } from "@world/Background";
 import { loadGameAssets, applyUiSprites } from "@services/AssetService";
 import { flushSave, initSave } from "@services/SaveService";
+import { getEquippedSkinId } from "@services/ProgressionService";
+import { resolveSkinSprites } from "@services/SkinService";
+import { bindWardrobe, syncEquippedSkinUi } from "@ui/wardrobe";
+import { resizeCanvas } from "@core/CanvasResize";
 import { playables } from "@platform/youtube/PlayablesBridge";
 import {
   getDomRefs,
@@ -49,8 +53,9 @@ export async function bootApplication(): Promise<void> {
 
   const background = new BackgroundRenderer();
   const [images] = await Promise.all([loadGameAssets(), background.load()]);
-  applyUiSprites(images);
   const state = createRuntime(dom, images, save.highScore, background);
+  state.equippedSkinId = getEquippedSkinId();
+  applyUiSprites(images, state.equippedSkinId);
 
   playables.init({
     onPause: () => {
@@ -70,9 +75,25 @@ export async function bootApplication(): Promise<void> {
 
   hideLoading(dom);
   resetRound(state);
-  bindResize(dom.canvas, state.images.panda, dom.uiLayer, (layout) => {
-    state.layout = layout;
-  });
+  const syncSkinLayout = () => {
+    const activePanda = resolveSkinSprites(state.images.skins, state.equippedSkinId).panda;
+    const ctx = dom.canvas.getContext("2d");
+    if (ctx) {
+      state.layout = resizeCanvas(dom.canvas, ctx, activePanda, dom.uiLayer);
+    }
+    syncEquippedSkinUi(state);
+  };
+
+  bindWardrobe(dom, state, syncSkinLayout);
+
+  bindResize(
+    dom.canvas,
+    () => resolveSkinSprites(state.images.skins, state.equippedSkinId).panda,
+    dom.uiLayer,
+    (layout) => {
+      state.layout = layout;
+    },
+  );
   playables.gameReady();
 
   const onJump = () => performJump(state);

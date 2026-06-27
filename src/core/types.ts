@@ -27,11 +27,14 @@ export interface CameraShake {
   intensity: number;
 }
 
+import type { SkinAtlas } from "@services/SkinService";
+
 export interface GameImages {
   panda: HTMLImageElement;
   pandaDead: HTMLImageElement;
   bambooPlatform: HTMLImageElement;
   bambooStump: HTMLImageElement;
+  skins: SkinAtlas;
 }
 
 export interface SaveData {

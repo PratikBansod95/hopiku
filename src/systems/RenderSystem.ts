@@ -1,4 +1,5 @@
 import type { Layout } from "@core/types";
+import { resolveSkinSprites } from "@services/SkinService";
 import type { RuntimeState } from "@core/GameContext";
 import { drawSpriteCentered } from "@services/AssetService";
 
@@ -47,10 +48,12 @@ export function renderGame(state: RuntimeState): void {
 
   drawJumpTrail(state, ctx);
 
+  const activeSkin = resolveSkinSprites(state.images.skins, state.equippedSkinId);
+
   state.player.draw(
     ctx,
     layout,
-    state.images.panda,
+    activeSkin.panda,
     state.gamePhase,
     state.platforms.map((p) => p.y),
   );
@@ -59,7 +62,7 @@ export function renderGame(state: RuntimeState): void {
     const deadY = state.layout.canvasHeight - cameraY - layout.playerHeight * 0.3;
     drawSpriteCentered(
       ctx,
-      state.images.pandaDead,
+      activeSkin.pandaDead,
       state.player.x,
       deadY,
       layout.playerWidth * 0.9,

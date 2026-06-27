@@ -1,10 +1,13 @@
 import type { LifetimeStats, RunResult, RunSessionStats, SaveData } from "@core/types";
 import {
   DEFAULT_SKIN_ID,
+  PANDA_SKINS,
   SAVE_VERSION,
   SUMMIT_UNLOCK_LOGS,
   UNLOCK_DEFINITIONS,
+  type PandaSkinId,
   type UnlockDefinition,
+  sanitizeEquippedSkin,
 } from "@config/progression.constants";
 import { getSave, writeSave } from "@services/SaveService";
 import { playables } from "@platform/youtube/PlayablesBridge";
@@ -88,4 +91,23 @@ export function formatLifetimeStatsLine(stats: LifetimeStats, unlockCount: numbe
 
 export function hasReachedSummit(logsClimbed: number): boolean {
   return logsClimbed >= SUMMIT_UNLOCK_LOGS;
+}
+
+export function isSkinUnlocked(skinId: PandaSkinId): boolean {
+  const skin = PANDA_SKINS[skinId];
+  if (!skin.unlockId) return true;
+  return getSave().unlocks.includes(skin.unlockId);
+}
+
+export function equipSkin(skinId: PandaSkinId): boolean {
+  if (!isSkinUnlocked(skinId)) return false;
+
+  const save = getSave();
+  writeSave({ ...save, equippedSkin: skinId });
+  return true;
+}
+
+export function getEquippedSkinId(): PandaSkinId {
+  const save = getSave();
+  return sanitizeEquippedSkin(save.equippedSkin, save.unlocks);
 }

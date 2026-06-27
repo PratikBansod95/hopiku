@@ -3,6 +3,7 @@ import {
   DEFAULT_LIFETIME_STATS,
   DEFAULT_SKIN_ID,
   SAVE_VERSION,
+  sanitizeEquippedSkin,
 } from "@config/progression.constants";
 import { playables } from "@platform/youtube/PlayablesBridge";
 
@@ -57,10 +58,10 @@ export function normalizeSave(raw: unknown): SaveData {
       highScore,
       stats: parseLifetimeStats(parsed.stats),
       unlocks,
-      equippedSkin:
-        typeof parsed.equippedSkin === "string" && parsed.equippedSkin.length > 0
-          ? parsed.equippedSkin
-          : DEFAULT_SKIN_ID,
+      equippedSkin: sanitizeEquippedSkin(
+        typeof parsed.equippedSkin === "string" ? parsed.equippedSkin : DEFAULT_SKIN_ID,
+        unlocks,
+      ),
     };
   }
 

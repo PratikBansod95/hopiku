@@ -10,6 +10,7 @@ import {
 } from "@ui/dom";
 import { createDefaultSpawnMemory, planSpawn } from "@world/spawn/SpawnPlanner";
 import { createDefaultRunSession } from "@services/ProgressionService";
+import { closeWardrobe } from "@ui/wardrobe";
 
 export function isPerfectLanding(platform: Platform, layout: RuntimeState["layout"]): boolean {
   const tolerance = layout.blockWidth * platform.widthScale * PHYSICS.perfectTolerance;
@@ -44,6 +45,7 @@ export function resetRound(state: RuntimeState): void {
   state.logsClimbed = 0;
   state.runSession = createDefaultRunSession();
   state.runCommitted = false;
+  closeWardrobe(state);
   state.spawnMemory = createDefaultSpawnMemory();
   state.background.reset();
   state.ambience.clear();

@@ -7,7 +7,9 @@ import { normalizeSave, writeSave, getSave, DEFAULT_SAVE } from "@services/SaveS
 import {
   commitRunResult,
   evaluateUnlocks,
+  equipSkin,
   formatLifetimeStatsLine,
+  getEquippedSkinId,
   hasReachedSummit,
 } from "@services/ProgressionService";
 
@@ -95,5 +97,36 @@ describe("ProgressionService", () => {
   it("detects summit threshold", () => {
     expect(hasReachedSummit(53)).toBe(false);
     expect(hasReachedSummit(54)).toBe(true);
+  });
+});
+
+describe("Skin progression", () => {
+  beforeEach(() => {
+    writeSave({ ...DEFAULT_SAVE, stats: { ...DEFAULT_LIFETIME_STATS } });
+  });
+
+  it("equips unlocked skins only", () => {
+    expect(equipSkin("default")).toBe(true);
+    expect(getEquippedSkinId()).toBe("default");
+
+    expect(equipSkin("ninja")).toBe(false);
+
+    writeSave({
+      ...getSave(),
+      unlocks: [UNLOCK_IDS.NINJA_PANDA],
+    });
+    expect(equipSkin("ninja")).toBe(true);
+    expect(getEquippedSkinId()).toBe("ninja");
+  });
+
+  it("sanitizes invalid equipped skin on save load", () => {
+    const migrated = normalizeSave({
+      version: 2,
+      highScore: 0,
+      stats: DEFAULT_LIFETIME_STATS,
+      unlocks: [],
+      equippedSkin: "ninja",
+    });
+    expect(migrated.equippedSkin).toBe("default");
   });
 });

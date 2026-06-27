@@ -6,7 +6,7 @@ import { Ambience } from "@world/Ambience";
 import { MenuAmbience } from "@world/MenuAmbience";
 import { BackgroundRenderer } from "@world/Background";
 import { FeedbackService } from "@services/FeedbackService";
-import { createDefaultRunSession } from "@services/ProgressionService";
+import { createDefaultRunSession, getEquippedSkinId } from "@services/ProgressionService";
 import type { RunSessionStats } from "@core/types";
 import { createDefaultSpawnMemory } from "@world/spawn/SpawnPlanner";
 import type { SpawnMemory } from "@world/spawn/platformTypes";
@@ -39,6 +39,8 @@ export interface RuntimeState {
   ytPaused: boolean;
   runSession: RunSessionStats;
   runCommitted: boolean;
+  equippedSkinId: string;
+  wardrobeOpen: boolean;
 }
 
 export function createRuntime(
@@ -82,5 +84,7 @@ export function createRuntime(
     ytPaused: false,
     runSession: createDefaultRunSession(),
     runCommitted: false,
+    equippedSkinId: getEquippedSkinId(),
+    wardrobeOpen: false,
   };
 }

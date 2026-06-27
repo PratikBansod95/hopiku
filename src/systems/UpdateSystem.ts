@@ -1,5 +1,6 @@
 import { PHYSICS, SHAKE, TIMING } from "@config/game.constants";
 import type { RuntimeState } from "@core/GameContext";
+import { refreshWardrobeIfOpen } from "@ui/wardrobe";
 import { hideHud, showGameOver } from "@ui/dom";
 import { checkCollisions } from "@systems/CollisionSystem";
 import { shake, updateShake } from "@systems/CameraShakeSystem";
@@ -75,6 +76,7 @@ export function updateGame(state: RuntimeState, dt: number, onJump: () => void):
       const newUnlocks = finalizeRun(state);
       state.highScore = getSave().highScore;
       showGameOver(state.dom, state.score, state.highScore, newUnlocks);
+      refreshWardrobeIfOpen(state);
     }
   } else if (state.gamePhase === "DYING_TAUNT") {
     state.deathStateTimer -= dt;

@@ -19,7 +19,7 @@ export function resizeCanvas(
 
 export function bindResize(
   canvas: HTMLCanvasElement,
-  panda: HTMLImageElement,
+  getPanda: () => HTMLImageElement,
   uiLayer: HTMLElement,
   onLayout: (layout: Layout) => void,
 ): void {
@@ -27,7 +27,7 @@ export function bindResize(
   if (!ctx) return;
 
   const onResize = () => {
-    onLayout(resizeCanvas(canvas, ctx, panda, uiLayer));
+    onLayout(resizeCanvas(canvas, ctx, getPanda(), uiLayer));
   };
 
   bindViewportResize(onResize);
