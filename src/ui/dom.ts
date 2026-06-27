@@ -1,4 +1,7 @@
 import { SCORING, TAUNTS, TIMING } from "@config/game.constants";
+import { getSave } from "@services/SaveService";
+import { formatLifetimeStatsLine } from "@services/ProgressionService";
+import type { UnlockDefinition } from "@config/progression.constants";
 
 export interface DomRefs {
   canvas: HTMLCanvasElement;
@@ -27,6 +30,8 @@ export interface DomRefs {
   zoneBadge: HTMLElement;
   zoneName: HTMLElement;
   logsCount: HTMLElement;
+  startStats: HTMLElement;
+  unlockBanner: HTMLElement;
 }
 
 export function getDomRefs(): DomRefs {
@@ -56,6 +61,8 @@ export function getDomRefs(): DomRefs {
   const zoneBadge = document.getElementById("zoneBadge");
   const zoneName = document.getElementById("zoneName");
   const logsCount = document.getElementById("logsCount");
+  const startStats = document.getElementById("startStats");
+  const unlockBanner = document.getElementById("unlockBanner");
 
   if (
     !canvas ||
@@ -83,7 +90,9 @@ export function getDomRefs(): DomRefs {
     !btnShare ||
     !zoneBadge ||
     !zoneName ||
-    !logsCount
+    !logsCount ||
+    !startStats ||
+    !unlockBanner
   ) {
     throw new Error("Missing required DOM elements");
   }
@@ -115,6 +124,8 @@ export function getDomRefs(): DomRefs {
     zoneBadge,
     zoneName,
     logsCount,
+    startStats,
+    unlockBanner,
   };
 }
 
@@ -167,6 +178,14 @@ export function showStart(dom: DomRefs, highScore: number): void {
   dom.gameOverScreen.classList.add("hidden");
   dom.zoneBadge.classList.add("hidden");
   dom.bestHud.textContent = highScore > 0 ? `BEST ${highScore}` : "";
+  updateStartStats(dom);
+}
+
+export function updateStartStats(dom: DomRefs): void {
+  const save = getSave();
+  const line = formatLifetimeStatsLine(save.stats, save.unlocks.length);
+  dom.startStats.textContent = save.stats.runsPlayed > 0 || save.stats.totalPerfects > 0 ? line : "";
+  dom.startStats.classList.toggle("hidden", dom.startStats.textContent.length === 0);
 }
 
 export function showPlaying(dom: DomRefs, highScore: number): void {
@@ -229,12 +248,26 @@ function formatTauntTitle(title: string): string {
   return `<span class="go-title-a">${title.slice(0, space)}</span><span class="go-title-b">${title.slice(space + 1)}</span>`;
 }
 
-export function showGameOver(dom: DomRefs, score: number, best: number): void {
+export function showGameOver(
+  dom: DomRefs,
+  score: number,
+  best: number,
+  newUnlocks: UnlockDefinition[] = [],
+): void {
   dom.gameOverScreen.classList.remove("hidden");
   dom.finalScore.textContent = String(score);
   const taunt = getTaunt(score);
   dom.tauntTitle.innerHTML = formatTauntTitle(taunt.title);
   dom.tauntSub.textContent = taunt.sub;
+
+  if (newUnlocks.length > 0) {
+    const names = newUnlocks.map((unlock) => unlock.name).join(", ");
+    dom.unlockBanner.textContent = `Unlocked: ${names}!`;
+    dom.unlockBanner.classList.remove("hidden");
+  } else {
+    dom.unlockBanner.textContent = "";
+    dom.unlockBanner.classList.add("hidden");
+  }
 
   dom.animBox.style.animation = "none";
   void dom.animBox.offsetHeight;
@@ -260,6 +293,8 @@ export function showGameOver(dom: DomRefs, score: number, best: number): void {
 
 export function hideGameOver(dom: DomRefs): void {
   dom.gameOverScreen.classList.add("hidden");
+  dom.unlockBanner.classList.add("hidden");
+  dom.unlockBanner.textContent = "";
 }
 
 function syncSoundToggle(btn: HTMLButtonElement, enabled: boolean): void {

@@ -6,6 +6,8 @@ import { Ambience } from "@world/Ambience";
 import { MenuAmbience } from "@world/MenuAmbience";
 import { BackgroundRenderer } from "@world/Background";
 import { FeedbackService } from "@services/FeedbackService";
+import { createDefaultRunSession } from "@services/ProgressionService";
+import type { RunSessionStats } from "@core/types";
 import { createDefaultSpawnMemory } from "@world/spawn/SpawnPlanner";
 import type { SpawnMemory } from "@world/spawn/platformTypes";
 import type { DomRefs } from "@ui/dom";
@@ -35,6 +37,8 @@ export interface RuntimeState {
   spawnMemory: SpawnMemory;
   feedback: FeedbackService;
   ytPaused: boolean;
+  runSession: RunSessionStats;
+  runCommitted: boolean;
 }
 
 export function createRuntime(
@@ -76,5 +80,7 @@ export function createRuntime(
     spawnMemory: createDefaultSpawnMemory(),
     feedback: new FeedbackService(),
     ytPaused: false,
+    runSession: createDefaultRunSession(),
+    runCommitted: false,
   };
 }

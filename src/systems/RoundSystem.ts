@@ -9,6 +9,7 @@ import {
   updateZoneHud,
 } from "@ui/dom";
 import { createDefaultSpawnMemory, planSpawn } from "@world/spawn/SpawnPlanner";
+import { createDefaultRunSession } from "@services/ProgressionService";
 
 export function isPerfectLanding(platform: Platform, layout: RuntimeState["layout"]): boolean {
   const tolerance = layout.blockWidth * platform.widthScale * PHYSICS.perfectTolerance;
@@ -41,6 +42,8 @@ export function resetRound(state: RuntimeState): void {
   state.cameraShake = { x: 0, y: 0, time: 0, intensity: 0 };
   state.lastScore = 0;
   state.logsClimbed = 0;
+  state.runSession = createDefaultRunSession();
+  state.runCommitted = false;
   state.spawnMemory = createDefaultSpawnMemory();
   state.background.reset();
   state.ambience.clear();

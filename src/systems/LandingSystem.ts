@@ -5,6 +5,7 @@ import { getComboReward, updateScore, updateZoneHud } from "@ui/dom";
 import { getBiomeForLogs, getBiomeIndexForLogs } from "@world/Biomes";
 import { shake } from "@systems/CameraShakeSystem";
 import { isPerfectLanding, spawnNextPlatform } from "@systems/RoundSystem";
+import { recordGoodLanding, recordPerfectLanding } from "@services/ProgressionService";
 
 export function handleLanding(
   state: RuntimeState,
@@ -50,10 +51,12 @@ export function handleLanding(
     );
     shake(state.cameraShake, SHAKE.perfectIntensity, SHAKE.perfectDuration);
     state.feedback.perfect();
+    recordPerfectLanding(state.runSession, state.combo);
   } else {
     state.combo = 0;
     state.score += SCORING.goodPoints;
     state.feedback.landGood();
+    recordGoodLanding(state.runSession);
     state.particles.spawnFloatingText(
       "GOOD",
       platform.x,

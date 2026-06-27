@@ -54,6 +54,7 @@ Imports use `@app`, `@config`, `@core`, `@entities`, `@world`, `@systems`, `@ser
 | Scoring rules | `systems/LandingSystem.ts`, `config/game.constants.ts` |
 | New screen | `ui/dom.ts` + `index.html` |
 | Platform integration | `platform/youtube/` |
+| Progression / unlocks | `config/progression.constants.ts`, `services/ProgressionService.ts`, `services/SaveService.ts` |
 
 ## Scripts
 

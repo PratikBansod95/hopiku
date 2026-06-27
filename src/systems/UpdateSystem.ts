@@ -1,9 +1,28 @@
 import { PHYSICS, SHAKE, TIMING } from "@config/game.constants";
 import type { RuntimeState } from "@core/GameContext";
-import { updateHighScore } from "@services/SaveService";
 import { hideHud, showGameOver } from "@ui/dom";
 import { checkCollisions } from "@systems/CollisionSystem";
 import { shake, updateShake } from "@systems/CameraShakeSystem";
+import {
+  commitRunResult,
+  hasReachedSummit,
+} from "@services/ProgressionService";
+import { getSave } from "@services/SaveService";
+import type { UnlockDefinition } from "@config/progression.constants";
+
+function finalizeRun(state: RuntimeState): UnlockDefinition[] {
+  if (state.runCommitted) return [];
+  state.runCommitted = true;
+
+  return commitRunResult({
+    score: state.score,
+    logsClimbed: state.logsClimbed,
+    perfects: state.runSession.perfects,
+    goods: state.runSession.goods,
+    peakCombo: state.runSession.peakCombo,
+    reachedSummit: hasReachedSummit(state.logsClimbed),
+  });
+}
 
 export function updateGame(state: RuntimeState, dt: number, onJump: () => void): void {
   if (state.gamePhase === "PAUSED" || state.ytPaused) return;
@@ -53,9 +72,9 @@ export function updateGame(state: RuntimeState, dt: number, onJump: () => void):
       state.gamePhase = "DYING_TAUNT";
       state.deathStateTimer = TIMING.deathTauntDuration;
       hideHud(state.dom);
-      const best = updateHighScore(state.score);
-      state.highScore = Math.max(state.highScore, best, state.score);
-      showGameOver(state.dom, state.score, state.highScore);
+      const newUnlocks = finalizeRun(state);
+      state.highScore = getSave().highScore;
+      showGameOver(state.dom, state.score, state.highScore, newUnlocks);
     }
   } else if (state.gamePhase === "DYING_TAUNT") {
     state.deathStateTimer -= dt;

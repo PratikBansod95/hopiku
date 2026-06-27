@@ -37,6 +37,34 @@ export interface GameImages {
 export interface SaveData {
   version: number;
   highScore: number;
+  stats: LifetimeStats;
+  unlocks: string[];
+  equippedSkin: string;
+}
+
+export interface LifetimeStats {
+  totalLogs: number;
+  totalPerfects: number;
+  totalGoods: number;
+  bestCombo: number;
+  runsPlayed: number;
+  bestLogsInRun: number;
+  summitReached: boolean;
+}
+
+export interface RunSessionStats {
+  perfects: number;
+  goods: number;
+  peakCombo: number;
+}
+
+export interface RunResult {
+  score: number;
+  logsClimbed: number;
+  perfects: number;
+  goods: number;
+  peakCombo: number;
+  reachedSummit: boolean;
 }
 
 export interface TauntTier {
