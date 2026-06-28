@@ -62,14 +62,14 @@ export function updateGame(state: RuntimeState, dt: number, onJump: () => void):
     state.deathStateTimer -= dt;
 
     if (state.deathStateTimer <= 0) {
-      state.gamePhase = "DYING_TAUNT";
-      state.deathStateTimer = TIMING.deathTauntDuration;
       hideHud(state.dom);
       const newUnlocks = finalizeRun(state);
       state.highScore = getSave().highScore;
       const save = getSave();
       const showSummit =
         hasReachedSummit(state.logsClimbed) || save.stats.summitReached;
+      state.gamePhase = "DYING_TAUNT";
+      state.deathStateTimer = TIMING.deathTauntDuration;
       showGameOver(state.dom, state.score, state.highScore, newUnlocks, showSummit);
       refreshWardrobeIfOpen(state);
     }

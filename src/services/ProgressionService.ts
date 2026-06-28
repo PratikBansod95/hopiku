@@ -96,13 +96,11 @@ export function hasReachedSummit(logsClimbed: number): boolean {
 
 export function commitRunFromState(state: {
   runCommitted: boolean;
-  gamePhase: string;
   score: number;
   logsClimbed: number;
   runSession: RunSessionStats;
 }): UnlockDefinition[] {
   if (state.runCommitted) return [];
-  if (state.gamePhase !== "PLAYING" && state.gamePhase !== "PAUSED") return [];
   if (state.logsClimbed === 0 && state.score === 0) return [];
 
   state.runCommitted = true;

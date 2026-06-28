@@ -134,12 +134,24 @@ describe("Skin progression", () => {
   it("skips committing empty active runs", () => {
     const unlocked = commitRunFromState({
       runCommitted: false,
-      gamePhase: "PLAYING",
       score: 0,
       logsClimbed: 0,
       runSession: { perfects: 0, goods: 0, peakCombo: 0 },
     });
     expect(unlocked).toEqual([]);
     expect(getSave().stats.runsPlayed).toBe(0);
+  });
+
+  it("commits runs during death sequence (game over path)", () => {
+    const unlocked = commitRunFromState({
+      runCommitted: false,
+      score: SKIN_UNLOCK_SCORES.ninja,
+      logsClimbed: 22,
+      runSession: { perfects: 18, goods: 4, peakCombo: 7 },
+    });
+
+    expect(getSave().highScore).toBe(SKIN_UNLOCK_SCORES.ninja);
+    expect(getSave().unlocks).toContain(UNLOCK_IDS.NINJA_PANDA);
+    expect(unlocked.some((def) => def.id === UNLOCK_IDS.NINJA_PANDA)).toBe(true);
   });
 });

@@ -168,3 +168,24 @@ describe("RoundSystem goHome", () => {
     expect(getSave().stats.runsPlayed).toBe(0);
   });
 });
+
+describe("Death run commit", () => {
+  beforeEach(() => {
+    writeSave({ ...DEFAULT_SAVE, stats: { ...DEFAULT_LIFETIME_STATS } });
+  });
+
+  it("commits score and unlocks when finalizing after death animation", () => {
+    const state = createMockState({
+      gamePhase: "DYING_SMOKE",
+      score: 45,
+      logsClimbed: 20,
+      runSession: { perfects: 15, goods: 5, peakCombo: 6 },
+    });
+
+    const unlocked = commitRunFromState(state);
+    expect(state.runCommitted).toBe(true);
+    expect(getSave().highScore).toBe(45);
+    expect(getSave().unlocks.length).toBeGreaterThan(0);
+    expect(unlocked.length).toBeGreaterThan(0);
+  });
+});
