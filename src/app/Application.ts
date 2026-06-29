@@ -38,10 +38,16 @@ import { renderGame } from "@systems/RenderSystem";
 import { bindShareToast, shareScore } from "@systems/ShareSystem";
 
 function toggleSound(state: RuntimeState, dom: DomRefs): void {
-  state.feedback.tap();
-  const enabled = !state.feedback.isAudioEnabled();
-  state.feedback.setAudioEnabled(enabled);
-  syncSoundButton(dom, enabled);
+  const nextEnabled = !state.feedback.isAudioEnabled();
+  if (!nextEnabled) {
+    state.feedback.tap();
+  }
+  state.feedback.setAudioEnabled(nextEnabled);
+  syncSoundButton(dom, nextEnabled);
+  if (nextEnabled) {
+    state.feedback.unlock();
+    state.feedback.tap();
+  }
 }
 
 let booted = false;

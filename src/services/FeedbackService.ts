@@ -30,21 +30,25 @@ export class FeedbackService {
   }
 
   landGood(): void {
+    this.unlock();
     this.sfx.playLand();
     hapticLand();
   }
 
   perfect(): void {
+    this.unlock();
     this.sfx.playPerfect();
     hapticPerfect();
   }
 
   death(): void {
+    this.unlock();
     this.sfx.playDeath();
     hapticDeath();
   }
 
   impact(): void {
+    this.unlock();
     this.sfx.playImpact();
     hapticImpact();
   }

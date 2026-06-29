@@ -30,8 +30,11 @@ export class SfxManager {
     this.enabled = enabled;
     if (!enabled && this.ctx?.state === "running") {
       void this.ctx.suspend();
-    } else if (enabled && this.ctx?.state === "suspended" && this.unlocked) {
-      void this.ctx.resume();
+      return;
+    }
+
+    if (enabled) {
+      void this.ensureUnlocked();
     }
   }
 
@@ -40,7 +43,7 @@ export class SfxManager {
   }
 
   unlock(): void {
-    void this.unlockAsync();
+    void this.ensureUnlocked();
   }
 
   playJump(): void {
@@ -73,6 +76,26 @@ export class SfxManager {
     this.play("tap", () => this.playTone(420, 0.04, "sine", 0.12, 0));
   }
 
+  private unlockPromise: Promise<void> | null = null;
+
+  private ensureUnlocked(): Promise<void> {
+    if (!this.enabled) {
+      return Promise.resolve();
+    }
+
+    if (this.unlocked && this.ctx?.state === "running") {
+      return Promise.resolve();
+    }
+
+    if (!this.unlockPromise) {
+      this.unlockPromise = this.unlockAsync().finally(() => {
+        this.unlockPromise = null;
+      });
+    }
+
+    return this.unlockPromise;
+  }
+
   private async unlockAsync(): Promise<void> {
     if (typeof window === "undefined" || !this.enabled) return;
 
@@ -95,6 +118,8 @@ export class SfxManager {
       // Browser may block until a later gesture; play() will retry resume.
     }
 
+    if (this.ctx.state !== "running") return;
+
     this.unlocked = true;
     void this.ensureBuffersLoaded();
   }
@@ -104,7 +129,10 @@ export class SfxManager {
   }
 
   private async playAsync(key: SfxKey, fallback: () => void): Promise<void> {
-    if (!this.enabled || !this.unlocked || !this.ctx || !this.master) return;
+    if (!this.enabled) return;
+
+    await this.ensureUnlocked();
+    if (!this.unlocked || !this.ctx || !this.master) return;
 
     try {
       if (this.ctx.state !== "running") {
